@@ -5,9 +5,9 @@
 3. Google maps javascript API key
 
 # Maps API Key Restrictions
-1.Maps JavaScript API
-2.Places API
-3.Geocoding API
+1. Maps JavaScript API
+2. Places API
+3. Geocoding API
 
 ## How to install and start
 
