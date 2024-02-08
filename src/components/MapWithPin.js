@@ -10,10 +10,11 @@ const MapWithPin = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setPinCoords({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
+            setPinCoords({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            });
+            getAddressFromCoordinates(position.coords.latitude,position.coords.longitude)
         },
         (error) => {
           console.error('Error getting user location:', error);
@@ -28,27 +29,33 @@ const MapWithPin = () => {
   };
 
   const getAddressFromCoordinates = (lat, lng) => {
-    const geocoder = new window.google.maps.Geocoder();
-    const latLng = new window.google.maps.LatLng(lat, lng);
+    // Check if Google Maps API is available
+    if (window.google && window.google.maps) {
+      const geocoder = new window.google.maps.Geocoder();
+      const latLng = new window.google.maps.LatLng(lat, lng);
 
-    geocoder.geocode({ location: latLng }, (results, status) => {
-      if (status === 'OK') {
-        if (results[0]) {
-          setAddress(results[0].formatted_address);
+      geocoder.geocode({ location: latLng }, (results, status) => {
+        if (status === 'OK') {
+          if (results[0]) {
+            setAddress(results[0].formatted_address);
+          } else {
+            setAddress('Location not found');
+          }
         } else {
-          setAddress('Location not found');
+          setAddress('Geocoder failed due to: ' + status);
         }
-      } else {
-        setAddress('Geocoder failed due to: ' + status);
-      }
-    });
+      });
+    } else {
+      // Handle the case where Google Maps API is not available
+      setAddress('Google Maps API not available');
+    }
   };
 
   return (
     <div style={{ height: '400px', width: '100%' }}>
       <GoogleMapReact
         bootstrapURLKeys={{ key: 'AIzaSyAT48JtEH6vUlz2MnEPs4S6evoCTEYAhDc', libraries: ['places'] }}
-        defaultCenter={{ lat: 0, lng: 0 }}
+        defaultCenter={{lat: 0, lng: 0}}
         defaultZoom={4}
         center={pinCoords}
         onClick={handleMapClick}
