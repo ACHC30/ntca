@@ -9,6 +9,9 @@
 2. Places API
 3. Geocoding API
 
+## Important video to watch
+1. is inside the video folder
+
 ## How to install and start
 
 1. Git Clone the project into you local machine
