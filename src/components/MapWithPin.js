@@ -1,15 +1,15 @@
-import {React, useState, useEffect} from 'react';
+import { React, useState, useEffect } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
-const MapWithPin = () => {
+const MapWithPin = ({address, setAddress}) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: 'AIzaSyAT48JtEH6vUlz2MnEPs4S6evoCTEYAhDc' // Replace with your API key
   });
 
   const [position, setPosition] = useState({ lat: 51.505, lng: -0.09 });
-  const [address, setAddress] = useState("");
-
+  // const [address, setAddress] = useState("");
+  
   useEffect(() => {
     // Fetch user's current position using Geolocation API
     if (navigator.geolocation) {
@@ -72,9 +72,9 @@ const MapWithPin = () => {
           onDragEnd={handleMarkerDrag}
         />
       </GoogleMap>
-      <div style={{ background: 'white', color:"black",position: 'absolute', top: '10px', left: '10px', padding: '10px', borderRadius: '5px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'}}>
-        <strong>Address:</strong> {address}
-      </div> {/* this text filed may have to be change into just the adress value and we pass on that value to a textfield in the forms later */}
+      {/* <div style={{ background: 'white', color:"black",position: 'absolute', top: '10px', left: '10px', padding: '10px', borderRadius: '5px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'}}>
+        <strong>Address:</strong> {props.address}
+      </div> */}
     </div>
   ) : null;
 };

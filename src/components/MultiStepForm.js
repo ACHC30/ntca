@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import MapWithPin from './MapWithPin';
 
 const FORM_STORAGE_KEY = 'multiStepForm';
 
 function MultiStepForm() {
+  const [address, setAddress] = useState("");
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
@@ -40,6 +42,15 @@ function MultiStepForm() {
         [name]: value,
       }));
     }
+  };
+
+   // Callback function to update address state
+   const handleAddressChange = (newAddress) => {
+    setAddress(newAddress);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      location: newAddress // Update location field in formData
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -133,8 +144,10 @@ function MultiStepForm() {
             />
             <br />
             <label>Location Cattle is found:</label>
-            {/* the map component */}
+            {/* Pass address state and callback function to MapWithPin component */}
+            <MapWithPin address={address} setAddress={handleAddressChange} />
             <input
+              style={{width: "50%"}}
               type="text"
               name="location"
               value={formData.location || ''}

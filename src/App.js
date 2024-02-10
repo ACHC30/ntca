@@ -1,5 +1,4 @@
 import './App.css';
-import MapWithPin from './components/MapWithPin';
 import MultiStepForm from './components/MultiStepForm';
 
 function App() {
@@ -7,8 +6,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div>
-          <h1>Map with Pin</h1>
-          <MapWithPin />
+          <h1>Northern Australian Producer Reporting Tool</h1>
           <MultiStepForm/>
         </div>
       </header>
