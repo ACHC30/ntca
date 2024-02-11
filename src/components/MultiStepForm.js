@@ -5,6 +5,7 @@ const FORM_STORAGE_KEY = 'multiStepForm';
 
 function MultiStepForm() {
   const [address, setAddress] = useState("");
+  const [image, setImage] = useState(null);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
@@ -26,7 +27,7 @@ function MultiStepForm() {
   }, [formData]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked, files } = e.target;
     if (type === 'checkbox') {
       // If the checkbox is checked, add its value to the array
       // If it's unchecked, remove its value from the array
@@ -36,6 +37,17 @@ function MultiStepForm() {
           ? [...(prevFormData[name] || []), value]
           : (prevFormData[name] || []).filter((item) => item !== value),
       }));
+    } else if (type === 'file') {
+      // Handle image upload
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: event.target.result // Store image data URL directly in formData
+        }));
+      };
+      reader.readAsDataURL(file);
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -69,6 +81,8 @@ function MultiStepForm() {
     setFormData({});
     // Reset step to 1
     setStep(1);
+    // Reset uploaded image after submission
+    setImage(null); 
   };
 
   const nextStep = () => {
@@ -280,7 +294,12 @@ function MultiStepForm() {
             />
             <br />
             <label>Upload Pictures</label>
-            {/* Upload Component? */}
+            <input
+            type="file"
+            accept="image/*"
+            name="image"
+            onChange={handleChange}
+            />
             <br />
           </div>
         );
