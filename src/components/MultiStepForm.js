@@ -38,16 +38,13 @@ function MultiStepForm() {
           : (prevFormData[name] || []).filter((item) => item !== value),
       }));
     } else if (type === 'file') {
-      // Handle image upload
-      const file = files[0];
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          [name]: event.target.result // Store image data URL directly in formData
-        }));
-      };
-      reader.readAsDataURL(file);
+      // Handle multiple file uploads
+      const fileArray = Array.from(files);
+      const imageArray = fileArray.map((file) => URL.createObjectURL(file));
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: imageArray, // Store an array of image data URLs
+      }));
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -299,6 +296,7 @@ function MultiStepForm() {
             accept="image/*"
             name="image"
             onChange={handleChange}
+            multiple
             />
             <br />
           </div>
