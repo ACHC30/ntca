@@ -8,6 +8,7 @@ const FORM_STORAGE_KEY = 'multiStepForm';
 function MultiStepForm() {
   const [address, setAddress] = useState("");
   const [image, setImage] = useState(null);
+  const [errorMessagePhoto, setErrorMessagePhoto] = useState("");
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
@@ -76,6 +77,16 @@ function MultiStepForm() {
       ...prevFormData,
       location: newAddress // Update location field in formData
     }));
+  };
+
+  const capturePhoto = (e) => {
+    e.preventDefault(); // Prevent form submission
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      // Code to capture photo using device camera
+      setErrorMessagePhoto('Functionality to capture photo is not implemented yet.'); // Placeholder for actual implementation
+    } else {
+      setErrorMessagePhoto('Sorry, capturing photo is not supported on this device.'); // Message for PC users
+    }
   };
 
   const handleSubmit = (e) => {
@@ -331,6 +342,11 @@ function MultiStepForm() {
             onChange={handleChange}
             multiple
             />
+            <br />
+            <span>or</span>
+            <button onClick={(e) => capturePhoto(e)}>Take Photo</button>
+            <br />
+            {errorMessagePhoto && <p>{errorMessagePhoto}</p>}
             <br />
           </div>
         );
