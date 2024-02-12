@@ -14,7 +14,7 @@ function MultiStepForm() {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
     
-    // Ensure 'Decay' is included in the problems array
+    // Ensure 'Other' is always checked first
     if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
       parsedFormData.problems.push('Other');
     } else if (!parsedFormData.problems) {
@@ -24,7 +24,6 @@ function MultiStepForm() {
     return parsedFormData;
   });
   
-
   useEffect(() => {
     localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
   }, [formData]);
@@ -81,9 +80,54 @@ function MultiStepForm() {
 
   const capturePhoto = (e) => {
     e.preventDefault(); // Prevent form submission
+  
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-      // Code to capture photo using device camera
-      setErrorMessagePhoto('Functionality to capture photo is not implemented yet.'); // Placeholder for actual implementation
+      // Access the device camera
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+          // Display camera stream in a video element
+          const video = document.createElement('video');
+          video.srcObject = stream;
+          video.setAttribute('autoplay', true);
+          video.setAttribute('playsinline', true); // For iOS Safari
+          document.body.appendChild(video);
+  
+          // Create a canvas element to capture a frame
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const context = canvas.getContext('2d');
+  
+          // Capture a frame from the video stream when a photo is requested
+          const takePhoto = () => {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageDataUrl = canvas.toDataURL('image/jpeg');
+            
+            // Append the captured photo data URL to the array of images in the form state
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              images: [...(prevFormData.images || []), imageDataUrl],
+            }));
+  
+            // You can now use `imageDataUrl` to display or upload the captured image
+            console.log('Captured photo:', imageDataUrl);
+  
+            // Stop the camera stream
+            stream.getVideoTracks().forEach(track => track.stop());
+            video.remove();
+            canvas.remove();
+          };
+  
+          // Add a button to capture the photo
+          const captureButton = document.createElement('button');
+          captureButton.textContent = 'Capture Photo';
+          captureButton.addEventListener('click', takePhoto);
+          document.body.appendChild(captureButton);
+        })
+        .catch((error) => {
+          console.error('Error accessing the camera:', error);
+          setErrorMessagePhoto('Error accessing the camera. Please make sure camera permissions are granted.');
+        });
     } else {
       setErrorMessagePhoto('Sorry, capturing photo is not supported on this device.'); // Message for PC users
     }
@@ -378,5 +422,4 @@ function MultiStepForm() {
     </div>
   );
 }
-
 export default MultiStepForm;
