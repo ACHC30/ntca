@@ -28,6 +28,22 @@ function MultiStepForm() {
     localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
   }, [formData]);
 
+  useEffect(() => {
+    // Fetch IP address when component mounts
+    fetch("https://api.ipify.org?format=json")
+      .then(response => response.json())
+      .then(data => {
+        const ipAddress = data.ip;
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          ipAddress: ipAddress
+        }));
+      })
+      .catch(error => {
+        console.error("Error fetching IP address:", error);
+      });
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     if (type === 'checkbox') {
