@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MapWithPin from './MapWithPin';
+import PhoneInput from 'react-phone-number-input'
+import 'react-phone-number-input/style.css'
 
 const FORM_STORAGE_KEY = 'multiStepForm';
 
@@ -38,20 +40,31 @@ function MultiStepForm() {
           : (prevFormData[name] || []).filter((item) => item !== value),
       }));
     } else if (type === 'file') {
-      // Handle image upload
-      const file = files[0];
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          [name]: event.target.result // Store image data URL directly in formData
-        }));
-      };
-      reader.readAsDataURL(file);
+      // Handle multiple file uploads
+      const fileArray = Array.from(files);
+      const imageArray = fileArray.map((file) => URL.createObjectURL(file));
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: imageArray, // Store an array of image data URLs
+      }));
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: value,
+      }));
+    }
+  };
+
+  const handleChangePhone = (value, name) => {
+    if (name === 'phone') {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value.target.value,
       }));
     }
   };
@@ -105,6 +118,7 @@ function MultiStepForm() {
               name="name"
               value={formData.name || ''}
               onChange={handleChange}
+              placeholder="Name"
             />
             <br />
             <label>Email:</label>
@@ -113,14 +127,16 @@ function MultiStepForm() {
               name="email"
               value={formData.email || ''}
               onChange={handleChange}
+              placeholder="Email"
             />
             <br />
-            <label>Phone:</label>
-            <input
-              type="tel"
-              name="phone"
+            <PhoneInput
+              international={false}
+              defaultCountry="AU"
               value={formData.phone || ''}
-              onChange={handleChange}
+              onChange={(value) => handleChangePhone(value, 'phone')}
+              placeholder="Enter Phone Number"
+              style={{ width: '200px', margin: '0 auto' }}
             />
             <br />
             <label>Reporters Role:</label>
@@ -147,6 +163,7 @@ function MultiStepForm() {
               name="property"
               value={formData.property || ''}
               onChange={handleChange}
+              placeholder="Property Name"
             />
             <br />
             <label>PIC:</label>
@@ -155,6 +172,7 @@ function MultiStepForm() {
               name="pic"
               value={formData.pic || ''}
               onChange={handleChange}
+              placeholder="PIC"
             />
             <br />
             <label>Location Cattle is found:</label>
@@ -166,6 +184,7 @@ function MultiStepForm() {
               name="location"
               value={formData.location || ''}
               onChange={handleChange}
+              placeholder="Address"
             />
             <br />
           </div>
@@ -174,12 +193,21 @@ function MultiStepForm() {
         return (
           <div>
             <h2>What have you seen?</h2>
+            <label>Date Seen?</label>
+            <input
+              type="date"
+              name="dateSeen"
+              value={formData.dateSeen || ''}
+              onChange={handleChange}
+            />
+            <br />
             <label>Approximate number of cattle affected?</label>
             <input
               type="text"
               name="affected"
               value={formData.affected || ''}
               onChange={handleChange}
+              placeholder="1-2-3"
             />
             <br />
             <label>Approximate number of cattle dead?</label>
@@ -188,6 +216,7 @@ function MultiStepForm() {
               name="dead"
               value={formData.dead || ''}
               onChange={handleChange}
+              placeholder="1-2-3"
             />
             <br />
             <label>Total number of yard at risk?</label>
@@ -196,6 +225,7 @@ function MultiStepForm() {
               name="risk"
               value={formData.risk || ''}
               onChange={handleChange}
+              placeholder="1-2-3"
             />
             <br />
             <label>Types/ages of cattle affected?</label>
@@ -299,6 +329,7 @@ function MultiStepForm() {
             accept="image/*"
             name="image"
             onChange={handleChange}
+            multiple
             />
             <br />
           </div>
