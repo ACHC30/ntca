@@ -150,39 +150,12 @@ function MultiStepForm() {
     }
   };
 
-  const convertFormDataToJsonFile = (formData) => {
-    const json = JSON.stringify(formData, null, 2);
-    return json; // Return the JSON content as a string
-  };
-
   const sendEmail = () => {
-    const sendGridApiKey = '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'; // Replace with your SendGrid API key
-    
-    const jsonContent = convertFormDataToJsonFile(formData);
-    const base64Content = btoa(jsonContent); // Convert JSON content to base64
-    
-    const emailData = {
-      to: formData.email,
-      from: 'christopher@aibrisbane.com.au',
-      subject: 'Sending Json file test',
-      attachments: [
-        {
-          content: base64Content,
-          filename: 'formData.json',
-          type: 'application/json',
-          disposition: 'attachment'
-        },
-      ]
-    };
-    
-    axios.post('https://api.sendgrid.com/v3/mail/send', emailData, {
-      headers: {
-        Authorization: `Bearer ${sendGridApiKey}`,
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(() => console.log('Email sent'))
-    .catch((error) => console.error(error));
+    const azureFunctionEndpoint = 'https://ntca-aibrisbane.azurewebsites.net/api/HttpTrigger1?code=shGA9qTFkEQcPCRnRx4IZUTLpsL_Q3IYk330GAeDVZ2GAzFuJmJTnQ==';
+  
+    axios.post(azureFunctionEndpoint, formData)
+      .then(() => console.log('Email sent'))
+      .catch((error) => console.error(error));
   };
   
   const handleSubmit = (e) => {

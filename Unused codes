@@ -1,12 +1,50 @@
-const convertFormDataToJsonFile = () => {
-    const json = JSON.stringify(formData, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'formData.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+// const convertFormDataToJsonFile = () => {
+//     const json = JSON.stringify(formData, null, 2);
+//     const blob = new Blob([json], { type: 'application/json' });
+//     const url = URL.createObjectURL(blob);
+//     const a = document.createElement('a');
+//     a.href = url;
+//     a.download = 'formData.json';
+//     document.body.appendChild(a);
+//     a.click();
+//     document.body.removeChild(a);
+//     URL.revokeObjectURL(url);
+//   };
+
+// const convertFormDataToJsonFile = () => {
+//     const json = JSON.stringify(formData, null, 2);
+//     const blob = new Blob([json], { type: 'application/json' });
+//     return blob;
+//   };
+
+
+//   const azureFunctionEndpoint = 'https://your-azure-function-url';
+  
+//   axios.post(azureFunctionEndpoint, formData)
+//     .then(() => console.log('Email sent'))
+//     .catch((error) => console.error(error));
+
+
+
+    // const jsonContent = convertFormDataToJsonFile(formData);
+    // const base64Content = btoa(jsonContent); // Convert JSON content to base64
+    
+    // const emailData = {
+    //   to: formData.email,
+    //   from: 'christopher@aibrisbane.com.au',
+    //   subject: 'Sending Json file test',
+    //   attachments: [
+    //     {
+    //       content: base64Content,
+    //       filename: 'formData.json',
+    //       type: 'application/json',
+    //       disposition: 'attachment'
+    //     },
+    //   ]
+    // };
+    
+    // axios.post('https://api.sendgrid.com/v3/mail/send', emailData, {
+    //   headers: {
+    //     Authorization: `Bearer ${sendGridApiKey}`,
+    //     'Content-Type': 'application/json',
+    //   },
