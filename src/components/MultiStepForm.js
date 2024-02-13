@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MapWithPin from './MapWithPin';
 import PhoneInput from 'react-phone-number-input'
+import axios from 'axios';
 import 'react-phone-number-input/style.css'
 
 const FORM_STORAGE_KEY = 'multiStepForm';
@@ -23,7 +24,7 @@ function MultiStepForm() {
   
     return parsedFormData;
   });
-  
+
   useEffect(() => {
     localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
   }, [formData]);
@@ -149,16 +150,50 @@ function MultiStepForm() {
     }
   };
 
+  const convertFormDataToJsonFile = (formData) => {
+    const json = JSON.stringify(formData, null, 2);
+    return json; // Return the JSON content as a string
+  };
+
+  const sendEmail = () => {
+    const sendGridApiKey = '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'; // Replace with your SendGrid API key
+    
+    const jsonContent = convertFormDataToJsonFile(formData);
+    const base64Content = btoa(jsonContent); // Convert JSON content to base64
+    
+    const emailData = {
+      to: formData.email,
+      from: 'christopher@aibrisbane.com.au',
+      subject: 'Sending Json file test',
+      attachments: [
+        {
+          content: base64Content,
+          filename: 'formData.json',
+          type: 'application/json',
+          disposition: 'attachment'
+        },
+      ]
+    };
+    
+    axios.post('https://api.sendgrid.com/v3/mail/send', emailData, {
+      headers: {
+        Authorization: `Bearer ${sendGridApiKey}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(() => console.log('Email sent'))
+    .catch((error) => console.error(error));
+  };
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-
     // Check if at least one checkbox is checked
     if (!formData.problems || formData.problems.length === 0) {
         alert('Please select at least one problem.');
         return;
     }
-    // Handle form submission here
-    console.log('Form submitted with data:', formData);
+    // Send the email
+    sendEmail();
     // Clear form data from localStorage
     localStorage.removeItem(FORM_STORAGE_KEY);
     // Optionally, you can clear the form data after submission
@@ -167,6 +202,8 @@ function MultiStepForm() {
     setStep(1);
     // Reset uploaded image after submission
     setImage(null); 
+
+    return
   };
 
   const nextStep = () => {
