@@ -151,10 +151,32 @@ function MultiStepForm() {
     }
   };
 
-  const sendEmail = () => {
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const sendEmail = async () => {
     const azureFunctionEndpoint = 'https://ntca-aibrisbane.azurewebsites.net/api/HttpTrigger1?code=shGA9qTFkEQcPCRnRx4IZUTLpsL_Q3IYk330GAeDVZ2GAzFuJmJTnQ==';
-  
-    axios.post(azureFunctionEndpoint, formData)
+    const base64Images = [];
+
+    // Convert each image to base64
+    for (let i = 0; i < image.length; i++) {
+      const base64String = await convertToBase64(image[i]);
+      base64Images.push(base64String);
+    }
+
+    // Combine formData and base64Images into a single object
+    const requestData = {
+      formData: formData,
+      base64Images: base64Images
+    };
+
+    await axios.post(azureFunctionEndpoint, requestData)
       .then(() => console.log('Email sent'))
       .catch((error) => console.error(error));
   };
@@ -167,8 +189,8 @@ function MultiStepForm() {
         return;
     }
     // Send the email
-    // sendEmail();
-    console.log(formData);
+    sendEmail();
+    // console.log(formData);
     console.log(image);
     // Clear form data from localStorage
     localStorage.removeItem(FORM_STORAGE_KEY);
