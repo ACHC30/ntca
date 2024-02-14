@@ -9,6 +9,12 @@
 2. Places API
 3. Geocoding API
 
+# Keys and parameters to configure
+1. Maps JavaScript API
+2. SendGrid API
+3. SendGrid authethicated email (currently its christopher@aibrisbane.com.au)
+4. make sure the free trials are still on and buy more premium plan when needed
+
 ## Important video to watch
 1. is inside the video folder
 

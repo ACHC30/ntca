@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MapWithPin from './MapWithPin';
 import PhoneInput from 'react-phone-number-input'
+import axios from 'axios';
 import 'react-phone-number-input/style.css'
 
 const FORM_STORAGE_KEY = 'multiStepForm';
@@ -8,12 +9,13 @@ const FORM_STORAGE_KEY = 'multiStepForm';
 function MultiStepForm() {
   const [address, setAddress] = useState("");
   const [image, setImage] = useState(null);
+  const [errorMessagePhoto, setErrorMessagePhoto] = useState("");
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
     
-    // Ensure 'Decay' is included in the problems array
+    // Ensure 'Other' is always checked first
     if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
       parsedFormData.problems.push('Other');
     } else if (!parsedFormData.problems) {
@@ -22,11 +24,26 @@ function MultiStepForm() {
   
     return parsedFormData;
   });
-  
 
   useEffect(() => {
     localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
   }, [formData]);
+
+  useEffect(() => {
+    // Fetch IP address when component mounts
+    fetch("https://api.ipify.org?format=json")
+      .then(response => response.json())
+      .then(data => {
+        const ipAddress = data.ip;
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          ipAddress: ipAddress
+        }));
+      })
+      .catch(error => {
+        console.error("Error fetching IP address:", error);
+      });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -41,11 +58,12 @@ function MultiStepForm() {
       }));
     } else if (type === 'file') {
       // Handle multiple file uploads
+      setImage(files);
       const fileArray = Array.from(files);
-      const imageArray = fileArray.map((file) => URL.createObjectURL(file));
+      const imageArray = fileArray.map((file) => file.name);
       setFormData((prevFormData) => ({
         ...prevFormData,
-        [name]: imageArray, // Store an array of image data URLs
+        [name]: imageArray, // Store an array of file objects directly
       }));
     } else {
       setFormData((prevFormData) => ({
@@ -78,16 +96,102 @@ function MultiStepForm() {
     }));
   };
 
+  const capturePhoto = (e) => {
+    e.preventDefault(); // Prevent form submission
+  
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      // Access the device camera
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+          // Display camera stream in a video element
+          const video = document.createElement('video');
+          video.srcObject = stream;
+          video.setAttribute('autoplay', true);
+          video.setAttribute('playsinline', true); // For iOS Safari
+          document.body.appendChild(video);
+  
+          // Create a canvas element to capture a frame
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const context = canvas.getContext('2d');
+  
+          // Capture a frame from the video stream when a photo is requested
+          const takePhoto = () => {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageDataUrl = canvas.toDataURL('image/jpeg');
+            
+            // Append the captured photo data URL to the array of images in the form state
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              image: [...(prevFormData.image || []), imageDataUrl],
+            }));
+  
+            // You can now use `imageDataUrl` to display or upload the captured image
+            console.log('Captured photo:', imageDataUrl);
+  
+            // Stop the camera stream
+            stream.getVideoTracks().forEach(track => track.stop());
+            video.remove();
+            canvas.remove();
+          };
+  
+          // Add a button to capture the photo
+          const captureButton = document.createElement('button');
+          captureButton.textContent = 'Capture Photo';
+          captureButton.addEventListener('click', takePhoto);
+          document.body.appendChild(captureButton);
+        })
+        .catch((error) => {
+          console.error('Error accessing the camera:', error);
+          setErrorMessagePhoto('Error accessing the camera. Please make sure camera permissions are granted.');
+        });
+    } else {
+      setErrorMessagePhoto('Sorry, capturing photo is not supported on this device.'); // Message for PC users
+    }
+  };
+
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const sendEmail = async () => {
+    const azureFunctionEndpoint = 'https://ntca-aibrisbane.azurewebsites.net/api/HttpTrigger1?code=shGA9qTFkEQcPCRnRx4IZUTLpsL_Q3IYk330GAeDVZ2GAzFuJmJTnQ==';
+    const base64Images = [];
+
+    // Convert each image to base64
+    for (let i = 0; i < image.length; i++) {
+      const base64String = await convertToBase64(image[i]);
+      base64Images.push(base64String);
+    }
+
+    // Combine formData and base64Images into a single object
+    const requestData = {
+      formData: formData,
+      base64Images: base64Images
+    };
+
+    await axios.post(azureFunctionEndpoint, requestData)
+      .then(() => console.log('Email sent'))
+      .catch((error) => console.error(error));
+  };
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-
     // Check if at least one checkbox is checked
     if (!formData.problems || formData.problems.length === 0) {
         alert('Please select at least one problem.');
         return;
     }
-    // Handle form submission here
-    console.log('Form submitted with data:', formData);
+    // Send the email
+    sendEmail();
+    // console.log(formData);
+    console.log(image);
     // Clear form data from localStorage
     localStorage.removeItem(FORM_STORAGE_KEY);
     // Optionally, you can clear the form data after submission
@@ -96,6 +200,8 @@ function MultiStepForm() {
     setStep(1);
     // Reset uploaded image after submission
     setImage(null); 
+
+    return
   };
 
   const nextStep = () => {
@@ -332,6 +438,11 @@ function MultiStepForm() {
             multiple
             />
             <br />
+            <span>or</span>
+            <button onClick={(e) => capturePhoto(e)}>Take Photo</button>
+            <br />
+            {errorMessagePhoto && <p>{errorMessagePhoto}</p>}
+            <br />
           </div>
         );
       default:
@@ -362,5 +473,4 @@ function MultiStepForm() {
     </div>
   );
 }
-
 export default MultiStepForm;
