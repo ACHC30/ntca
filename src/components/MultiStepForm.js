@@ -58,11 +58,12 @@ function MultiStepForm() {
       }));
     } else if (type === 'file') {
       // Handle multiple file uploads
+      setImage(files);
       const fileArray = Array.from(files);
-      const imageArray = fileArray.map((file) => URL.createObjectURL(file));
+      const imageArray = fileArray.map((file) => file.name);
       setFormData((prevFormData) => ({
         ...prevFormData,
-        [name]: imageArray, // Store an array of image data URLs
+        [name]: imageArray, // Store an array of file objects directly
       }));
     } else {
       setFormData((prevFormData) => ({
@@ -123,7 +124,7 @@ function MultiStepForm() {
             // Append the captured photo data URL to the array of images in the form state
             setFormData((prevFormData) => ({
               ...prevFormData,
-              images: [...(prevFormData.images || []), imageDataUrl],
+              image: [...(prevFormData.image || []), imageDataUrl],
             }));
   
             // You can now use `imageDataUrl` to display or upload the captured image
@@ -166,7 +167,9 @@ function MultiStepForm() {
         return;
     }
     // Send the email
-    sendEmail();
+    // sendEmail();
+    console.log(formData);
+    console.log(image);
     // Clear form data from localStorage
     localStorage.removeItem(FORM_STORAGE_KEY);
     // Optionally, you can clear the form data after submission

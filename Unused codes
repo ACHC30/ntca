@@ -48,3 +48,14 @@
     //     Authorization: `Bearer ${sendGridApiKey}`,
     //     'Content-Type': 'application/json',
     //   },
+
+
+
+    // else if (type === 'file') {
+    //     // Handle multiple file uploads
+    //     const fileArray = Array.from(files);
+    //     const imageArray = fileArray.map((file) => URL.createObjectURL(file));
+    //     setFormData((prevFormData) => ({
+    //       ...prevFormData,
+    //       [name]: imageArray, // Store an array of image data URLs
+    //     }));
