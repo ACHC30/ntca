@@ -1,35 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import MapWithPin from './MapWithPin';
-import PhoneInput from 'react-phone-number-input'
 import axios from 'axios';
+//pages
+import PersonInfo from './Pages/PersonInfo';
+import LocationPage from './Pages/LocationPage';
+import ProblemsPage from './Pages/ProblemsPage';
+import NumberMainPage from './Pages/NumberMainPage';
+import TypePage from './Pages/TypePage';
+import UploadPage from './Pages/UploadPage';
+//Logos and images
+import logo from '../images/logo.svg';
+//CSS
 import 'react-phone-number-input/style.css'
 
 const FORM_STORAGE_KEY = 'multiStepForm';
+const IMAGE_STORAGE_KEY = 'fileListImage';
 
 function MultiStepForm() {
+  //Lists
+  const problems = [
+    "Sudden death",
+    "Skin lesions/problems",
+    "Mouth or nose lesions",
+    "Lame cattle",
+    "Balance/standing (neurological) problems",
+    "Reproductive issues",
+    "Breathing difficulties/coughing",
+    "Wasting/ill thrift",
+    "Other"
+  ];
+  const cattleTypesAges = [
+    "All Cattle Types/ages",
+    "Cows Only",
+    "Weaners Only",
+    "Calves Only",
+    "Bulls Only",
+    "Steers Only",
+    "Helfers Only",
+    "Helfers And Steers",
+    "Other"
+  ];
+  const reportersRole = [
+    "Cattle Handler",
+    "Livestock owner/management",
+    "Other"
+  ];
+  //useStates
   const [address, setAddress] = useState("");
-  const [image, setImage] = useState(null);
   const [errorMessagePhoto, setErrorMessagePhoto] = useState("");
   const [step, setStep] = useState(1);
+  const [images, setImages] = useState({});
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-    
     // Ensure 'Other' is always checked first
     if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
       parsedFormData.problems.push('Other');
     } else if (!parsedFormData.problems) {
       parsedFormData.problems = ['Other'];
     }
-  
     return parsedFormData;
   });
-
+  //useEffects
   useEffect(() => {
     localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
   }, [formData]);
 
   useEffect(() => {
+    // Retrieve the File List
+    const retrievedFileList = localStorage.getItem(IMAGE_STORAGE_KEY);
+    if (retrievedFileList) {
+      const deserializedFileList = JSON.parse(retrievedFileList);
+      setImages(deserializedFileList);
+    } 
     // Fetch IP address when component mounts
     fetch("https://api.ipify.org?format=json")
       .then(response => response.json())
@@ -44,9 +86,15 @@ function MultiStepForm() {
         console.error("Error fetching IP address:", error);
       });
   }, []);
-
+  //Functions
+  const nextStep = () => {
+    setStep((prevStep) => prevStep + 1);
+  };
+  const prevStep = () => {
+    setStep((prevStep) => prevStep - 1);
+  };
   const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
+    const { name, value, type, checked } = e.target;
     if (type === 'checkbox') {
       // If the checkbox is checked, add its value to the array
       // If it's unchecked, remove its value from the array
@@ -55,16 +103,7 @@ function MultiStepForm() {
         [name]: checked
           ? [...(prevFormData[name] || []), value]
           : (prevFormData[name] || []).filter((item) => item !== value),
-      }));
-    } else if (type === 'file') {
-      // Handle multiple file uploads
-      setImage(files);
-      const fileArray = Array.from(files);
-      const imageArray = fileArray.map((file) => file.name);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: imageArray, // Store an array of file objects directly
-      }));
+      }));      
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -72,8 +111,28 @@ function MultiStepForm() {
       }));
     }
   };
-
-  const handleChangePhone = (value, name) => {
+  const handleChangeUpload = async (e) => {
+    const {name, type, files} = e.target;
+    if (type === 'file') {
+      //save file name in JSON file
+      const fileArray = Array.from(files);
+      const imageArray = fileArray.map((file) => file.name);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: imageArray,
+      }));
+      // Convert each image to base64
+      const images64 = []
+      for (let i = 0; i < files.length; i++) {
+        const base64String = await convertToBase64(files[i]);
+        images64.push(base64String);
+      }
+      setImages(images64);
+      //Save the image to cache
+      localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(images64));
+    }
+  }
+  const handleChangePhoneNum = (value, name) => {
     if (name === 'phone') {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -86,16 +145,53 @@ function MultiStepForm() {
       }));
     }
   };
-
-   // Callback function to update address state
-   const handleAddressChange = (newAddress) => {
+  const handleAddressChange = (newAddress) => {
     setAddress(newAddress);
     setFormData((prevFormData) => ({
       ...prevFormData,
       location: newAddress // Update location field in formData
     }));
   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Check if at least one checkbox is checked
+    if (!formData.problems || formData.problems.length === 0) {
+        alert('Please select at least one problem.');
+        return;
+    }
+    // Send the email
+    sendEmail();
+    // Clear form data from localStorage
+    localStorage.removeItem(FORM_STORAGE_KEY);
+    // Optionally, you can clear the form data after submission
+    setFormData({});
+    // Reset step to 1
+    setStep(1);
+    // Reset uploaded image after submission
+    setImages(null); 
+    return
+  };
+  const sendEmail = async () => {
+    const azureFunctionEndpoint = 'https://ntca-aibrisbane.azurewebsites.net/api/HttpTrigger1?code=shGA9qTFkEQcPCRnRx4IZUTLpsL_Q3IYk330GAeDVZ2GAzFuJmJTnQ==';
 
+    // Combine formData and Images into a single object
+    const requestData = {
+      formData: formData,
+      base64Images: images
+    };
+
+    await axios.post(azureFunctionEndpoint, requestData)
+      .then(() => console.log('Email sent'))
+      .catch((error) => console.error(error));
+  };
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = (error) => reject(error);
+    });
+  };
   const capturePhoto = (e) => {
     e.preventDefault(); // Prevent form submission
   
@@ -150,300 +246,65 @@ function MultiStepForm() {
       setErrorMessagePhoto('Sorry, capturing photo is not supported on this device.'); // Message for PC users
     }
   };
-
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = (error) => reject(error);
-    });
-  };
-
-  const sendEmail = async () => {
-    const azureFunctionEndpoint = 'https://ntca-aibrisbane.azurewebsites.net/api/HttpTrigger1?code=shGA9qTFkEQcPCRnRx4IZUTLpsL_Q3IYk330GAeDVZ2GAzFuJmJTnQ==';
-    const base64Images = [];
-
-    // Convert each image to base64
-    for (let i = 0; i < image.length; i++) {
-      const base64String = await convertToBase64(image[i]);
-      base64Images.push(base64String);
-    }
-
-    // Combine formData and base64Images into a single object
-    const requestData = {
-      formData: formData,
-      base64Images: base64Images
-    };
-
-    await axios.post(azureFunctionEndpoint, requestData)
-      .then(() => console.log('Email sent'))
-      .catch((error) => console.error(error));
-  };
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Check if at least one checkbox is checked
-    if (!formData.problems || formData.problems.length === 0) {
-        alert('Please select at least one problem.');
-        return;
-    }
-    // Send the email
-    sendEmail();
-    // console.log(formData);
-    console.log(image);
-    // Clear form data from localStorage
-    localStorage.removeItem(FORM_STORAGE_KEY);
-    // Optionally, you can clear the form data after submission
-    setFormData({});
-    // Reset step to 1
-    setStep(1);
-    // Reset uploaded image after submission
-    setImage(null); 
-
-    return
-  };
-
-  const nextStep = () => {
-    setStep((prevStep) => prevStep + 1);
-  };
-
-  const prevStep = () => {
-    setStep((prevStep) => prevStep - 1);
-  };
-
   const renderForm = () => {
     switch (step) {
       case 1:
-        return (
+        return(
           <div>
-            <h2>Personal Information</h2>
-            <label>Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name || ''}
-              onChange={handleChange}
-              placeholder="Name"
-            />
-            <br />
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email || ''}
-              onChange={handleChange}
-              placeholder="Email"
-            />
-            <br />
-            <PhoneInput
-              international={false}
-              defaultCountry="AU"
-              value={formData.phone || ''}
-              onChange={(value) => handleChangePhone(value, 'phone')}
-              placeholder="Enter Phone Number"
-              style={{ width: '200px', margin: '0 auto' }}
-            />
-            <br />
-            <label>Reporters Role:</label>
-            <select
-              name="reportersRole"
-              value={formData.reportersRole || ''}
-              onChange={handleChange}
-            >
-              <option value="">Select Role</option>
-              <option value="Farmer">Farmer</option>
-              <option value="Veterinarian">Veterinarian</option>
-              <option value="Researcher">Researcher</option>
-            </select>
-            <br />
+            <img src={logo} className="App-logo" alt="logo" />
+            <h1>Welcome To NTCA</h1>
+            <h3>Report instances of diseases found in cattle in the Northern Territory</h3>
           </div>
         );
-        case 2:
+      case 2:
+        return(
+          <PersonInfo
+            formData={formData}
+            handleChange={handleChange}
+            handleChangePhoneNum={handleChangePhoneNum}
+            reportersRole={reportersRole}
+          />
+        ); 
+      case 3:
         return (
-          <div>
-            <h2>Location</h2>
-            <label>Property Name:</label>
-            <input
-              type="text"
-              name="property"
-              value={formData.property || ''}
-              onChange={handleChange}
-              placeholder="Property Name"
-            />
-            <br />
-            <label>PIC:</label>
-            <input
-              type="text"
-              name="pic"
-              value={formData.pic || ''}
-              onChange={handleChange}
-              placeholder="PIC"
-            />
-            <br />
-            <label>Location Cattle is found:</label>
-            {/* Pass address state and callback function to MapWithPin component */}
-            <MapWithPin address={address} setAddress={handleAddressChange} />
-            <input
-              style={{width: "50%"}}
-              type="text"
-              name="location"
-              value={formData.location || ''}
-              onChange={handleChange}
-              placeholder="Address"
-            />
-            <br />
-          </div>
+          <LocationPage
+            formData={formData}
+            address={address}
+            setAddress={handleAddressChange}
+            handleChange={handleChange}
+          />
         );
-        case 3:
+      case 4:
         return (
-          <div>
-            <h2>What have you seen?</h2>
-            <label>Date Seen?</label>
-            <input
-              type="date"
-              name="dateSeen"
-              value={formData.dateSeen || ''}
-              onChange={handleChange}
-            />
-            <br />
-            <label>Approximate number of cattle affected?</label>
-            <input
-              type="text"
-              name="affected"
-              value={formData.affected || ''}
-              onChange={handleChange}
-              placeholder="1-2-3"
-            />
-            <br />
-            <label>Approximate number of cattle dead?</label>
-            <input
-              type="text"
-              name="dead"
-              value={formData.dead || ''}
-              onChange={handleChange}
-              placeholder="1-2-3"
-            />
-            <br />
-            <label>Total number of yard at risk?</label>
-            <input
-              type="text"
-              name="risk"
-              value={formData.risk || ''}
-              onChange={handleChange}
-              placeholder="1-2-3"
-            />
-            <br />
-            <label>Types/ages of cattle affected?</label>
-            <select
-              name="cattleAffected"
-              value={formData.cattleAffected || ''}
-              onChange={handleChange}
-            >
-              <option value="">Select Cattle Type/Age</option>
-              <option value="Calves">Calves</option>
-              <option value="Heifers">Heifers</option>
-              <option value="Cows">Cows</option>
-            </select>
-            <br />
-          </div>
+          <ProblemsPage
+            problems={problems}
+            formData={formData}
+            handleChange={handleChange}
+          />
         );
-        case 4:
+      case 5:
         return (
-          <div>
-            <h2>Problems</h2>
-            <label>Sudden Death</label>
-            <input
-              type="checkbox"
-              name="problems"
-              value="Sudden Death"
-              checked={formData.problems && formData.problems.includes('Sudden Death')}
-              onChange={handleChange}
-            />
-            <label>Skin lesions/problems</label>
-            <input
-              type="checkbox"
-              name="problems"
-              value="Skin lesions/problems"
-              checked={formData.problems && formData.problems.includes('Skin lesions/problems')}
-              onChange={handleChange}
-            />
-            <br />
-            <label>Mouth or nose lesions</label>
-            <input
-              type="checkbox"
-              name="problems"
-              value="Mouth or nose lesions"
-              checked={formData.problems && formData.problems.includes('Mouth or nose lesions')}
-              onChange={handleChange}
-            />
-            <label>Lame cattle</label>
-            <input
-              type="checkbox"
-              name="problems"
-              value="Lame cattle"
-              checked={formData.problems && formData.problems.includes('Lame cattle')}
-              onChange={handleChange}
-            />
-            <br />
-            <label>Balance/standing (neurological) problems</label>
-            <input
-              type="checkbox"
-              name="problems"
-              value="Balance/standing (neurological) problems"
-              checked={formData.problems && formData.problems.includes('Balance/standing (neurological) problems')}
-              onChange={handleChange}
-            />
-            <label>Reproductive issues</label>
-            <input
-              type="checkbox"
-              name="problems"
-              value="Reproductive issues"
-              checked={formData.problems && formData.problems.includes('Reproductive issues')}
-              onChange={handleChange}
-            />
-            <br />
-            <label>Breathing difficulties/coughing</label>
-            <input
-              type="checkbox"
-              name="problems"
-              value="Breathing difficulties/coughing"
-              checked={formData.problems && formData.problems.includes('Breathing difficulties/coughing')}
-              onChange={handleChange}
-            />
-            <label>Wasting/ill thrift</label>
-            <input
-              type="checkbox"
-              name="problems"
-              value="Wasting/ill thrift"
-              checked={formData.problems && formData.problems.includes('Wasting/ill thrift')}
-              onChange={handleChange}
-            />
-            <br />
-            <label>Other</label>
-            <input
-              type="checkbox"
-              name="problems"
-              value="Other"
-              checked={formData.problems && formData.problems.includes('Other')}
-              onChange={handleChange}
-            />
-            <br />
-            <label>Upload Pictures</label>
-            <input
-            type="file"
-            accept="image/*"
-            name="image"
-            onChange={handleChange}
-            multiple
-            />
-            <br />
-            <span>or</span>
-            <button onClick={(e) => capturePhoto(e)}>Take Photo</button>
-            <br />
-            {errorMessagePhoto && <p>{errorMessagePhoto}</p>}
-            <br />
-          </div>
+          <NumberMainPage
+            formData={formData}
+            handleChange={handleChange}
+          />
+        );
+      case 6:
+        return(
+          <TypePage
+            formData={formData}
+            handleChange={handleChange}
+            cattleTypesAges={cattleTypesAges}
+          />
+        );
+      case 7:
+        return(
+          <UploadPage
+            handleChangeUpload={handleChangeUpload}
+            capturePhoto={capturePhoto}
+            errorMessagePhoto={errorMessagePhoto}
+            selectedFiles={formData.image}
+          />
         );
       default:
         return null;
@@ -453,18 +314,24 @@ function MultiStepForm() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {renderForm()}
         {step > 1 && (
           <button type="button" onClick={prevStep}>
             Previous
           </button>
         )}
-        {step < 4 && (
+        {renderForm()}
+        {step === 1 && (
+          <button type="button" onClick={nextStep}>
+            Report a Cattle Issue
+          </button>
+        )}
+        
+        {step < 7 && step !== 1 && (
           <button type="button" onClick={nextStep}>
             Next
           </button>
         )}
-        {step === 4 && (
+        {step === 7 && (
           <button type="submit">
             Submit
           </button>
