@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import MapWithPin from './MapWithPin';
-import PhoneInput from 'react-phone-number-input'
 import axios from 'axios';
+//pages
+import PersonInfo from './Pages/PersonInfo';
+import LocationPage from './Pages/LocationPage';
+import ProblemsPage from './Pages/ProblemsPage';
+import NumberMainPage from './Pages/NumberMainPage';
+import TypePage from './Pages/TypePage';
+import UploadPage from './Pages/UploadPage';
 //Logos and images
 import logo from '../logo.svg';
 //CSS
@@ -241,195 +246,53 @@ function MultiStepForm() {
           </div>
         );
       case 2:
-        return (
-          <div>
-            <h2>Personal Information</h2>
-            <label>Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name || ''}
-              onChange={handleChange}
-              placeholder="Name"
-            />
-            <br />
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email || ''}
-              onChange={handleChange}
-              placeholder="Email"
-            />
-            <br />
-            <PhoneInput
-              international={false}
-              defaultCountry="AU"
-              value={formData.phone || ''}
-              onChange={(value) => handleChangePhoneNum(value, 'phone')}
-              placeholder="Enter Phone Number"
-              style={{ width: '200px', margin: '0 auto' }}
-            />
-            <br />
-            <label>Reporters Role:</label>
-            <select
-              name="reportersRole"
-              value={formData.reportersRole || ''}
-              onChange={handleChange}
-            >
-              <option value="">Select Role</option>
-              {reportersRole.map((roles, index) => (<option key={index} value={roles}>{roles}</option>))}
-            </select>
-            <br />
-          </div>
-        );
+        return(
+          <PersonInfo
+            formData={formData}
+            handleChange={handleChange}
+            handleChangePhoneNum={handleChangePhoneNum}
+            reportersRole={reportersRole}
+          />
+        ); 
       case 3:
         return (
-          <div>
-            <h2>Where were the affected cattle?</h2>
-            <label>Property Name:</label>
-            <input
-              type="text"
-              name="property"
-              value={formData.property || ''}
-              onChange={handleChange}
-              placeholder="Property Name"
-            />
-            <br />
-            <label>PIC - If Known:</label>
-            <input
-              type="text"
-              name="pic"
-              value={formData.pic || ''}
-              onChange={handleChange}
-              placeholder="PIC"
-            />
-            <br />
-            <label>Location Cattle found:</label>
-            <MapWithPin address={address} setAddress={handleAddressChange} />
-            <input
-              style={{width: "50%"}}
-              type="text"
-              name="location"
-              value={formData.location || ''}
-              onChange={handleChange}
-              placeholder="Address"
-            />
-            <br />
-          </div>
+          <LocationPage
+            formData={formData}
+            address={address}
+            setAddress={handleAddressChange}
+            handleChange={handleChange}
+          />
         );
       case 4:
         return (
-          <div>
-            <h2>Problems Present</h2>
-            {problems.map((problem, index) => (
-              <div key={index}>
-                <input
-                  key={index}
-                  type="checkbox"
-                  name="problems"
-                  value={problem}
-                  checked={formData.problems && formData.problems.includes(problem)}
-                  onChange={handleChange}
-                />
-                <label>{problem}</label>
-                <br />
-              </div>
-            ))}
-          </div>
+          <ProblemsPage
+            problems={problems}
+            formData={formData}
+            handleChange={handleChange}
+          />
         );
       case 5:
         return (
-          <div>
-            <h2>What have you seen in a cattle?</h2>
-            <label>Approximate number of cattle affected?</label>
-            <input
-              type="text"
-              name="affected"
-              value={formData.affected || ''}
-              onChange={handleChange}
-              placeholder="1-2-3"
-            />
-            <br />
-            <label>Approximate number of cattle dead?</label>
-            <input
-              type="text"
-              name="dead"
-              value={formData.dead || ''}
-              onChange={handleChange}
-              placeholder="1-2-3"
-            />
-            <br />
-            <label>Total number of yard at risk?</label>
-            <input
-              type="text"
-              name="risk"
-              value={formData.risk || ''}
-              onChange={handleChange}
-              placeholder="1-2-3"
-            />
-            <br />
-            <label>Date Problem Seen?</label>
-            <input
-              type="date"
-              name="dateSeen"
-              value={formData.dateSeen || ''}
-              onChange={handleChange}
-            />
-          </div>
+          <NumberMainPage
+            formData={formData}
+            handleChange={handleChange}
+          />
         );
       case 6:
         return(
-          <div>
-            <h2>What have you seen in the cattle?</h2>
-            <label>Types/ages of cattle affected?</label>
-            <select
-              name="cattleAffected"
-              value={formData.cattleAffected || ''}
-              onChange={handleChange}
-            >
-              <option value="">Select An Option</option>
-              {cattleTypesAges.map((ta) => (<option value={ta}>{ta}</option>))}
-            </select>
-            <br />
-            <label>Other Comments</label>
-            <input
-              style={{height:"96px", width:"393px"}}
-              type="text"
-              name="comment"
-              value={formData.comment || ''}
-              onChange={handleChange}
-            />
-          </div>
+          <TypePage
+            formData={formData}
+            handleChange={handleChange}
+            cattleTypesAges={cattleTypesAges}
+          />
         );
       case 7:
         return(
-          <div>
-            <label>Upload Pictures</label>
-            <br />
-            <input
-            type="file"
-            accept="image/*"
-            name="image"
-            onChange={handleChange}
-            multiple
-            />
-            <br />
-            <span>or</span>
-            <button onClick={(e) => capturePhoto(e)}>Take Photo</button>
-            <br />
-            {errorMessagePhoto && <p>{errorMessagePhoto}</p>}
-            <br />
-            <label>Upload Video</label>
-            <br />
-            <input
-            type="file"
-            accept="video/*"
-            name="video"
-            onChange={handleChange}
-            multiple
-            />
-          </div>
+          <UploadPage
+            handleChange={handleChange}
+            capturePhoto={capturePhoto}
+            errorMessagePhoto={errorMessagePhoto}
+          />
         );
       default:
         return null;
