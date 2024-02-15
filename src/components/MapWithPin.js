@@ -8,11 +8,21 @@ const MapWithPin = ({address, setAddress}) => {
   });
 
   const [position, setPosition] = useState({ lat: 51.505, lng: -0.09 });
-  // const [address, setAddress] = useState("");
   
   useEffect(() => {
     // Fetch user's current position using Geolocation API
-    if (navigator.geolocation) {
+    if (address) {
+      const geocoder = new window.google.maps.Geocoder();
+  
+      geocoder.geocode({ address: address }, (results, status) => {
+        if (status === 'OK') {
+          const location = results[0].geometry.location;
+          setPosition({ lat: location.lat(), lng: location.lng() });
+        } else {
+          console.error('Geocode was not successful for the following reason:', status);
+        }
+      });
+    } else if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setPosition({
@@ -27,7 +37,7 @@ const MapWithPin = ({address, setAddress}) => {
     } else {
       console.error('Geolocation is not supported by this browser.');
     }
-  }, []);
+  }, [address]);
 
   const handleMarkerDrag = (event) => {
     setPosition({

@@ -13,6 +13,7 @@ import logo from '../logo.svg';
 import 'react-phone-number-input/style.css'
 
 const FORM_STORAGE_KEY = 'multiStepForm';
+const IMAGE_STORAGE_KEY = 'fileListImage';
 
 function MultiStepForm() {
   //Lists
@@ -45,9 +46,9 @@ function MultiStepForm() {
   ];
   //useStates
   const [address, setAddress] = useState("");
-  const [image, setImage] = useState(null);
   const [errorMessagePhoto, setErrorMessagePhoto] = useState("");
   const [step, setStep] = useState(1);
+  const [images, setImages] = useState({});
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
@@ -65,6 +66,12 @@ function MultiStepForm() {
   }, [formData]);
 
   useEffect(() => {
+    // Retrieve the File List
+    const retrievedFileList = localStorage.getItem(IMAGE_STORAGE_KEY);
+    if (retrievedFileList) {
+      const deserializedFileList = JSON.parse(retrievedFileList);
+      setImages(deserializedFileList);
+    } 
     // Fetch IP address when component mounts
     fetch("https://api.ipify.org?format=json")
       .then(response => response.json())
@@ -87,7 +94,7 @@ function MultiStepForm() {
     setStep((prevStep) => prevStep - 1);
   };
   const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
+    const { name, value, type, checked } = e.target;
     if (type === 'checkbox') {
       // If the checkbox is checked, add its value to the array
       // If it's unchecked, remove its value from the array
@@ -97,15 +104,6 @@ function MultiStepForm() {
           ? [...(prevFormData[name] || []), value]
           : (prevFormData[name] || []).filter((item) => item !== value),
       }));      
-    } else if (type === 'file') {
-      // Handle multiple file uploads
-      setImage(files);
-      const fileArray = Array.from(files);
-      const imageArray = fileArray.map((file) => file.name);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: imageArray, // Store an array of file objects directly
-      }));
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -113,6 +111,27 @@ function MultiStepForm() {
       }));
     }
   };
+  const handleChangeUpload = async (e) => {
+    const {name, type, files} = e.target;
+    if (type === 'file') {
+      //save file name in JSON file
+      const fileArray = Array.from(files);
+      const imageArray = fileArray.map((file) => file.name);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: imageArray,
+      }));
+      // Convert each image to base64
+      const images64 = []
+      for (let i = 0; i < files.length; i++) {
+        const base64String = await convertToBase64(files[i]);
+        images64.push(base64String);
+      }
+      setImages(images64);
+      //Save the image to cache
+      localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(images64));
+    }
+  }
   const handleChangePhoneNum = (value, name) => {
     if (name === 'phone') {
       setFormData((prevFormData) => ({
@@ -149,24 +168,16 @@ function MultiStepForm() {
     // Reset step to 1
     setStep(1);
     // Reset uploaded image after submission
-    setImage(null); 
-
+    setImages(null); 
     return
   };
   const sendEmail = async () => {
     const azureFunctionEndpoint = 'https://ntca-aibrisbane.azurewebsites.net/api/HttpTrigger1?code=shGA9qTFkEQcPCRnRx4IZUTLpsL_Q3IYk330GAeDVZ2GAzFuJmJTnQ==';
-    const base64Images = [];
 
-    // Convert each image to base64
-    for (let i = 0; i < image.length; i++) {
-      const base64String = await convertToBase64(image[i]);
-      base64Images.push(base64String);
-    }
-
-    // Combine formData and base64Images into a single object
+    // Combine formData and Images into a single object
     const requestData = {
       formData: formData,
-      base64Images: base64Images
+      base64Images: images
     };
 
     await axios.post(azureFunctionEndpoint, requestData)
@@ -289,9 +300,10 @@ function MultiStepForm() {
       case 7:
         return(
           <UploadPage
-            handleChange={handleChange}
+            handleChangeUpload={handleChangeUpload}
             capturePhoto={capturePhoto}
             errorMessagePhoto={errorMessagePhoto}
+            selectedFiles={formData.image}
           />
         );
       default:
