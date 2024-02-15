@@ -11,7 +11,7 @@ import UploadPage from './Pages/UploadPage';
 import logo from '../images/logo.svg';
 //CSS
 import 'react-phone-number-input/style.css'
-
+//cache keys
 const FORM_STORAGE_KEY = 'multiStepForm';
 const IMAGE_STORAGE_KEY = 'fileListImage';
 
@@ -48,6 +48,7 @@ function MultiStepForm() {
   const [address, setAddress] = useState("");
   const [errorMessagePhoto, setErrorMessagePhoto] = useState("");
   const [step, setStep] = useState(1);
+  const [entryID, setEntryID] = useState(1);
   const [images, setImages] = useState({});
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
@@ -71,7 +72,13 @@ function MultiStepForm() {
     if (retrievedFileList) {
       const deserializedFileList = JSON.parse(retrievedFileList);
       setImages(deserializedFileList);
-    } 
+    }
+    // Get Entry ID from database
+    // ----here
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      entryID: entryID
+    }));
     // Fetch IP address when component mounts
     fetch("https://api.ipify.org?format=json")
       .then(response => response.json())
@@ -116,7 +123,7 @@ function MultiStepForm() {
     if (type === 'file') {
       //save file name in JSON file
       const fileArray = Array.from(files);
-      const imageArray = fileArray.map((file) => file.name);
+      const imageArray = fileArray.map((file) => file.name + "_" + entryID);
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: imageArray,
@@ -161,14 +168,26 @@ function MultiStepForm() {
     }
     // Send the email
     sendEmail();
-    // Clear form data from localStorage
+    // Clear form data from cache
     localStorage.removeItem(FORM_STORAGE_KEY);
-    // Optionally, you can clear the form data after submission
-    setFormData({});
-    // Reset step to 1
+    localStorage.removeItem(IMAGE_STORAGE_KEY);
+    // Clear & Reset the form data after submission
     setStep(1);
-    // Reset uploaded image after submission
-    setImages(null); 
+    setAddress("");
+    setErrorMessagePhoto("");
+    setImages({});
+    setEntryID((prevEntryID) => prevEntryID + 1);
+    // function to save entry id to database.
+    setFormData(() => {
+        const parsedFormData = {};
+        // Ensure 'Other' is always checked first
+        if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
+          parsedFormData.problems.push('Other');
+        } else if (!parsedFormData.problems) {
+          parsedFormData.problems = ['Other'];
+        }
+        return parsedFormData;
+    });
     return
   };
   const sendEmail = async () => {
@@ -310,7 +329,6 @@ function MultiStepForm() {
         return null;
     }
   };
-
   return (
     <div>
       <form onSubmit={handleSubmit}>

@@ -7,7 +7,7 @@ function UploadPage({ handleChangeUpload, capturePhoto, errorMessagePhoto, selec
       <br />
       <label>Selected Files</label>
       <br/>
-      {selectedFiles ? selectedFiles.map((name) => (<p>{name}</p>)) : <p>None Selected</p>}
+      {selectedFiles ? selectedFiles.map((index,name) => (<p key={index}>{name}</p>)) : <p>None Selected</p>}
       <br/>
       <input
         type="file"
