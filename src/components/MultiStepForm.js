@@ -8,7 +8,7 @@ import NumberMainPage from './Pages/NumberMainPage';
 import TypePage from './Pages/TypePage';
 import UploadPage from './Pages/UploadPage';
 //Logos and images
-import logo from '../logo.svg';
+import logo from '../images/logo.svg';
 //CSS
 import 'react-phone-number-input/style.css'
 
