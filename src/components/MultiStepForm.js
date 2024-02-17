@@ -48,7 +48,6 @@ function MultiStepForm() {
   const [address, setAddress] = useState("");
   const [images, setImages] = useState({});
   const [step, setStep] = useState(1);
-  const [entryID, setEntryID] = useState(1);
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
@@ -72,12 +71,6 @@ function MultiStepForm() {
       const deserializedFileList = JSON.parse(retrievedFileList);
       setImages(deserializedFileList);
     }
-    // Get Entry ID from database
-    // ----here
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      entryID: entryID
-    }));
     // Fetch IP address when component mounts
     fetch("https://api.ipify.org?format=json")
       .then(response => response.json())
@@ -91,7 +84,7 @@ function MultiStepForm() {
       .catch(error => {
         console.error("Error fetching IP address:", error);
       });
-  }, [entryID]);
+  }, []);
   //Functions
   const nextStep = () => {
     // Perform validation before proceeding to the next step
@@ -151,7 +144,7 @@ function MultiStepForm() {
     if (type === 'file') {
       //save file name in JSON file
       const fileArray = Array.from(files);
-      const imageArray = fileArray.map((file) => file.name + "_" + entryID);
+      const imageArray = fileArray.map((file) => file.name);
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: imageArray,
@@ -193,9 +186,6 @@ function MultiStepForm() {
       }
       return parsedFormData;
     });
-    setEntryID((prevEntryID) => prevEntryID + 1);
-    // function to save entry id to database.
-    // ---here
     return
   };
   const sendEmail = async () => {
