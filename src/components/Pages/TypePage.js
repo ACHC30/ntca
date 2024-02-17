@@ -1,6 +1,13 @@
 import React from 'react';
 
-function TypePage({ formData, handleChange, cattleTypesAges }) {
+function TypePage({ formData, setFormData, cattleTypesAges }) {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
   return (
     <div>
       <h2>What have you seen in the cattle?</h2>

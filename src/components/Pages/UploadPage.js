@@ -1,13 +1,14 @@
 import React from 'react';
 
-function UploadPage({ handleChangeUpload, capturePhoto, errorMessagePhoto, selectedFiles }) {
+function UploadPage({ handleChangeUpload, selectedFiles }) {
   return (
     <div>
-      <label>Upload Pictures</label>
+      <h2>Upload Pictures</h2>
       <br />
       <label>Selected Files</label>
       <br/>
-      {selectedFiles ? selectedFiles.map((index,name) => (<p key={index}>{name}</p>)) : <p>None Selected</p>}
+      {selectedFiles && selectedFiles.map((file, index) => (<p key={index}>{file}</p>))}
+      {!selectedFiles && <p>None Selected</p>}
       <br/>
       <input
         type="file"
@@ -16,11 +17,6 @@ function UploadPage({ handleChangeUpload, capturePhoto, errorMessagePhoto, selec
         onChange={handleChangeUpload}
         multiple
       />
-      <br />
-      <span>or</span>
-      <button onClick={capturePhoto}>Take Photo</button>
-      <br />
-      {errorMessagePhoto && <p>{errorMessagePhoto}</p>}
       <br />
       {/* <label>Upload Video</label>
       <br />
