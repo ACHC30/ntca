@@ -1,10 +1,18 @@
 import React from 'react';
 
-function NumberMainPage({ formData, handleChange }) {
+function NumberMainPage({ formData, setFormData }) {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
   return (
     <div>
       <h2>What have you seen in a cattle?</h2>
-      <label>Approximate number of cattle affected?</label>
+      <label>Approximate number of cattle affected? <span style={{ color: 'red' }}> *</span> </label>
       <input
         type="text"
         name="affected"
