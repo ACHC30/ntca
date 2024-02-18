@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 //pages
+import GetStartedPage from './Pages/GetStartedPage';
 import PersonInfo from './Pages/PersonInfo';
 import LocationPage from './Pages/LocationPage';
 import ProblemsPage from './Pages/ProblemsPage';
@@ -8,9 +9,10 @@ import NumberMainPage from './Pages/NumberMainPage';
 import TypePage from './Pages/TypePage';
 import UploadPage from './Pages/UploadPage';
 //Logos and images
-import logo from '../images/logo.svg';
+import logo from '../images/NTCA_Logo.png';
 //CSS
 import 'react-phone-number-input/style.css'
+import '../css/MultiStepForm.css'
 //cache keys
 const FORM_STORAGE_KEY = 'multiStepForm';
 const IMAGE_STORAGE_KEY = 'fileListImage';
@@ -131,35 +133,6 @@ function MultiStepForm() {
   const prevStep = () => {
     setStep((prevStep) => prevStep - 1);
   };
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = (error) => reject(error);
-    });
-  };
-  const handleChangeUpload = async (e) => {
-    const {name, type, files} = e.target;
-    if (type === 'file') {
-      //save file name in JSON file
-      const fileArray = Array.from(files);
-      const imageArray = fileArray.map((file) => file.name);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: imageArray,
-      }));
-      // Convert each image to base64
-      const images64 = []
-      for (let i = 0; i < files.length; i++) {
-        const base64String = await convertToBase64(files[i]);
-        images64.push(base64String);
-      }
-      setImages(images64);
-      //Save the image to cache
-      localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(images64));
-    }
-  };
   const handleSubmit = (e) => {
     e.preventDefault();
     // check for image upload
@@ -207,11 +180,7 @@ function MultiStepForm() {
     switch (step) {
       case 1:
         return(
-          <div>
-            <img src={logo} className="App-logo" alt="logo" />
-            <h1>Welcome To NTCA</h1>
-            <h3>Report instances of diseases found in cattle in the Northern Territory</h3>
-          </div>
+          <GetStartedPage logo= {logo}/>
         );
       case 2:
         return(
@@ -255,9 +224,10 @@ function MultiStepForm() {
         );
       case 7:
         return(
-          //upload logic??
           <UploadPage
-            handleChangeUpload={handleChangeUpload}
+            imageKey={IMAGE_STORAGE_KEY}
+            setFormData={setFormData}
+            setImages={setImages}
             selectedFiles={formData.image}
           />
         );
@@ -275,11 +245,10 @@ function MultiStepForm() {
         )}
         {renderForm()}
         {step === 1 && (
-          <button type="button" onClick={nextStep}>
+          <button className='MultiStepForm-button' type="button" onClick={nextStep}>
             Report a Cattle Issue
           </button>
         )}
-        
         {step < 7 && step !== 1 && (
           <button type="button" onClick={nextStep}>
             Next
