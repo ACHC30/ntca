@@ -1,0 +1,51 @@
+.LocationPage{ 
+    text-align: center;
+}
+
+.LocationPage h2 {
+    color: #333333;
+    font-family: "Lato", Helvetica;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 24px;
+    text-align: center;
+}
+
+.LocationPage label {
+    color: #4c4c4c;
+    font-family: "Lato", Helvetica;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 20px;
+}
+
+.LocationPage .inputFrames,
+.LocationPage .mapsFrame {
+    width: 393px; /* Adjust this width as needed */
+    max-width: 80%;
+    margin-bottom: 20px;
+}
+
+.LocationPage .inputFrames {
+    text-align: left;
+    margin: 0 auto;
+}
+
+.LocationPage .input{
+    width: 98.5%;
+    height: 40px;
+    background-color: transparent;
+    border: 1px solid;
+    border-color: #1d7cbc;
+    border-radius: 6px;
+    outline: none; /* Removes the default blue outline when focused */
+}
+
+.LocationPage .mapsFrame{
+    width: 393px;
+    text-align: left;
+    margin: 0 auto;
+}
+

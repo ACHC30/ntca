@@ -1,0 +1,77 @@
+.PersonInfoPage {
+    margin: 5%;
+    text-align: center;
+}
+
+.PersonInfoPage h2 {
+    color: #333333;
+    font-family: "Lato", Helvetica;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 24px;
+    text-align: center;
+}
+
+.PersonInfoPage label {
+    color: #4c4c4c;
+    font-family: "Lato", Helvetica;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 20px;
+}
+
+.PersonInfoPage .input,
+.PersonInfoPage .phonenum,
+.PersonInfoPage .dropdown{
+    width: 393px; /* Adjust this width as needed */
+    max-width: 90%;
+    margin-bottom: 50px;
+}
+
+.PersonInfoPage .input{
+    border: none;
+    background-color: transparent;
+    border-bottom: 1px solid #1d7cbc; /* You can adjust the color and thickness of the line */
+    outline: none; /* Removes the default blue outline when focused */
+}
+
+.PersonInfoPage .phonenum {
+    text-align: left;
+    margin: 0 auto;
+}
+
+.PersonInfoPage .phonenumfield {
+    width: 95%; 
+    padding: 8px;
+    background-color: transparent;
+    border: 1px solid;
+    border-color: #1d7cbc;
+    border-radius: 6px;
+    outline: none; /* Removes the default blue outline when focused */
+}
+
+.PersonInfoPage .dropdown {
+    text-align: left;
+    margin: 0 auto;
+    display: table; /* Use display: table; for centering */
+}
+
+.PersonInfoPage .dropdown select {
+    background-color: transparent;
+    border: 1px solid;
+    border-color: #1d7cbc;
+    border-radius: 6px;
+    height: 36px;
+    width: 100%;
+    display: block; /* Ensures the select element fills the width */
+    margin: 0 auto; /* Center the select element */
+}
+
+.PhoneInputInput {
+    width: 400px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}

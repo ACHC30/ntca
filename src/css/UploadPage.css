@@ -1,0 +1,54 @@
+.UploadPage{ 
+    text-align: center;
+}
+
+.UploadPage h2 {
+    color: #333333;
+    font-family: "Lato", Helvetica;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 24px;
+    text-align: center;
+}
+
+.UploadPage label {
+    color: #4c4c4c;
+    font-family: "Lato", Helvetica;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 20px;
+}
+
+.UploadPage .uploadFrames {
+    width: 393px; /* Adjust this width as needed */
+    max-width: 80%;
+    margin-bottom: 20px;
+}
+
+.UploadPage .uploadFrames {
+    text-align: left;
+    margin: 0 auto;
+}
+
+.UploadPage .upload {
+    display: none; /* Hide the default file input */
+}
+
+.UploadPage .custom-upload-button {
+    display: inline-block;
+    width: 98.5%;
+    height: 40px;
+    background-color: transparent;
+    border: 1px solid;
+    border-color: #1d7cbc;
+    border-radius: 6px;
+    outline: none; /* Removes the default blue outline when focused */
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: left;
+}
+
