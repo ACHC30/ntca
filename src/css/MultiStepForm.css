@@ -1,6 +1,5 @@
 .MultiStepForm {
     font-family: "Lato", Helvetica;
-    margin: 5%;
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Center content vertically */
     text-align: center; /* Center text horizontally */
@@ -12,9 +11,27 @@
     height: 54px;
     padding: 10px 12px;
     width: 361px;
+    max-width: 80%;
     color: #f5f5f5;
     font-family: "Lato", Helvetica;
     font-size: 18px;
     font-weight: 700;
     letter-spacing: 0;
+}
+
+.MultiStepForm-backFrame{
+    text-align: left;
+}
+
+.MultiStepForm-back {
+    background-color: transparent;
+    border: none;
+    color: #666666;
+    font-family: "Lato", Helvetica;
+    font-size: 18px;
+    font-weight: 700;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 24px;
+    padding: 5px;
 }

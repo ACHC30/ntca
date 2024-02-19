@@ -1,8 +1,9 @@
 import React from 'react';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
+import '../../css/PersonInfoPage.css'
 
-function PersonInfo({ formData, setFormData, reportersRole, errors }) {
+function PersonInfoPage({ formData, setFormData, reportersRole }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if(name === "name"){
@@ -38,10 +39,11 @@ function PersonInfo({ formData, setFormData, reportersRole, errors }) {
     }
   };
   return (
-    <div>
-      <h2>Personal Information</h2>
-      <label>Name:</label>
+    <div className='PersonInfoPage'>
+      <h2>Who Are You?</h2>
+      <br />
       <input
+        className='input'
         type="text"
         name="name"
         value={formData.name || ''}
@@ -49,41 +51,47 @@ function PersonInfo({ formData, setFormData, reportersRole, errors }) {
         placeholder="Name"
       />
       <br />
-      <label> Email: <span style={{ color: 'red' }}> *</span> </label>
         <input
+          className='input'
           type="email"
           name="email"
           value={formData.email || ''}
           onChange={handleChange}
-          placeholder="Email"
+          placeholder="Email*"
         />
-      {errors && <span style={{ color: 'red' }}>{errors}</span>}
       <br />
-      <PhoneInput
-        international={false}
-        defaultCountry="AU"
-        value={formData.phone || ''}
-        onChange={(value) => handleChangePhoneNum(value, 'phone')}
-        placeholder="Enter Phone Number"
-        style={{ width: '200px', margin: '0 auto' }}
-      />
+      <div className='phonenum'>
+        <label>Phone Number</label>
+        <br />
+        <PhoneInput
+          className='phonenumfield'
+          international={false}
+          defaultCountry="AU"
+          value={formData.phone || ''}
+          onChange={(value) => handleChangePhoneNum(value, 'phone')}
+          placeholder="+61"
+        />
+      </div>
       <br />
-      <label>Reporter's Role:</label>
-      <select
-        name="reportersRole"
-        value={formData.reportersRole || ''}
-        onChange={handleChange}
-      >
-        <option value="">Select An Option</option>
-        {reportersRole.map((role, index) => (
-          <option key={index} value={role}>
-            {role}
-          </option>
-        ))}
-      </select>
+      <div className='dropdown'>
+        <label>Reporter's Role:</label>
+        <br />
+        <select
+          name="reportersRole"
+          value={formData.reportersRole || ''}
+          onChange={handleChange}
+        >
+          <option value="">Select An Option</option>
+          {reportersRole.map((role, index) => (
+            <option key={index} value={role}>
+              {role}
+            </option>
+          ))}
+        </select>
+      </div>
       <br />
     </div>
   );
 }
   
-export default PersonInfo;
+export default PersonInfoPage;

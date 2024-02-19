@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 //pages
 import GetStartedPage from './Pages/GetStartedPage';
-import PersonInfo from './Pages/PersonInfo';
+import PersonInfoPage from './Pages/PersonInfoPage';
 import LocationPage from './Pages/LocationPage';
 import ProblemsPage from './Pages/ProblemsPage';
 import NumberMainPage from './Pages/NumberMainPage';
@@ -171,9 +171,10 @@ function MultiStepForm() {
     };
 
     // console.log(formData);
+    alert('Please wait email is being sent...');
 
     await axios.post(azureFunctionEndpoint, requestData)
-      .then(() => console.log('Email sent'))
+      .then(() => alert('Email sent'))
       .catch((error) => console.error(error));
   };
   const renderForm = () => {
@@ -184,7 +185,7 @@ function MultiStepForm() {
         );
       case 2:
         return(
-          <PersonInfo
+          <PersonInfoPage
             formData={formData}
             setFormData={setFormData}
             reportersRole={reportersRole}
@@ -236,12 +237,14 @@ function MultiStepForm() {
     }
   };
   return (
-    <div>
+    <div className='MultiStepForm'>
       <form onSubmit={handleSubmit}>
         {step > 1 && (
-          <button type="button" onClick={prevStep}>
-            Previous
-          </button>
+          <div className='MultiStepForm-backFrame'>
+            <button className='MultiStepForm-back' type="button" onClick={prevStep}>
+              &lt; Back
+            </button>
+          </div>
         )}
         {renderForm()}
         {step === 1 && (
@@ -250,12 +253,12 @@ function MultiStepForm() {
           </button>
         )}
         {step < 7 && step !== 1 && (
-          <button type="button" onClick={nextStep}>
+          <button className='MultiStepForm-button' type="button" onClick={nextStep}>
             Next
           </button>
         )}
         {step === 7 && (
-          <button type="submit">
+          <button className='MultiStepForm-button' type="submit">
             Submit
           </button>
         )}
