@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../css/TypePage.css';
 
 function TypePage({ formData, setFormData, cattleTypesAges }) {
   const handleChange = (e) => {
@@ -9,30 +10,38 @@ function TypePage({ formData, setFormData, cattleTypesAges }) {
     }));
   };
   return (
-    <div>
+    <div className='TypePage'>
       <h2>What have you seen in the cattle?</h2>
-      <label>Types/ages of cattle affected?</label>
-      <select
-        name="cattleAffected"
-        value={formData.cattleAffected || ''}
-        onChange={handleChange}
-      >
-        <option value="">Select An Option</option>
-        {cattleTypesAges.map((ta, index) => (
-          <option key={index} value={ta}>
-            {ta}
-          </option>
-        ))}
-      </select>
+      <div className='selectFrame'>
+        <label>Types/ages of cattle affected?</label>
+        <br />
+        <select
+          className='select'
+          name="cattleAffected"
+          value={formData.cattleAffected || ''}
+          onChange={handleChange}
+        >
+          <option value="">Select An Option</option>
+          {cattleTypesAges.map((ta, index) => (
+            <option key={index} value={ta}>
+              {ta}
+            </option>
+          ))}
+        </select>
+      </div>
       <br />
-      <label>Other Comments</label>
-      <input
-        style={{ height: '96px', width: '393px' }}
-        type="text"
-        name="comment"
-        value={formData.comment || ''}
-        onChange={handleChange}
-      />
+      <div className='inputFrames'>
+        <label>Other Comments</label>
+        <br />
+        <input
+          className='input'
+          type="text"
+          name="comment"
+          value={formData.comment || ''}
+          onChange={handleChange}
+        />
+      </div>
+      <br />
     </div>
   );
 }

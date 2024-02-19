@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../css/NumberMainPage.css'
 
 function NumberMainPage({ formData, setFormData }) {
   const handleChange = (e) => {
@@ -10,42 +11,59 @@ function NumberMainPage({ formData, setFormData }) {
   };
 
   return (
-    <div>
+    <div className='NumberMainPage'>
       <h2>What have you seen in a cattle?</h2>
-      <label>Approximate number of cattle affected? <span style={{ color: 'red' }}> *</span> </label>
-      <input
-        type="text"
-        name="affected"
-        value={formData.affected || ''}
-        onChange={handleChange}
-        placeholder="1-2-3"
-      />
+      <div className='inputFrames'>
+        <label>Approximate number of cattle affected? <span style={{ color: 'red' }}> *</span> </label>
+        <br />
+        <input
+          className='input'
+          type="text"
+          name="affected"
+          value={formData.affected || ''}
+          onChange={handleChange}
+          placeholder="1-2-3"
+        />
+      </div>
       <br />
-      <label>Approximate number of cattle dead?</label>
-      <input
-        type="text"
-        name="dead"
-        value={formData.dead || ''}
-        onChange={handleChange}
-        placeholder="1-2-3"
-      />
+      <div className='inputFrames'>
+        <label>Approximate number of cattle dead?</label>
+        <br />
+        <input
+          className='input'
+          type="text"
+          name="dead"
+          value={formData.dead || ''}
+          onChange={handleChange}
+          placeholder="1-2-3"
+        />
+      </div>
       <br />
-      <label>Total number of yard at risk?</label>
-      <input
-        type="text"
-        name="risk"
-        value={formData.risk || ''}
-        onChange={handleChange}
-        placeholder="1-2-3"
-      />
+      <div className='inputFrames'>
+        <label>Total number of yard at risk?</label>
+        <br />
+        <input
+          className='input'
+          type="text"
+          name="risk"
+          value={formData.risk || ''}
+          onChange={handleChange}
+          placeholder="1-2-3"
+        />
+      </div>
       <br />
-      <label>Date Problem Seen?</label>
-      <input
-        type="date"
-        name="dateSeen"
-        value={formData.dateSeen || ''}
-        onChange={handleChange}
-      />
+      <div className='dateFrame'>
+        <label>Date Problem Seen? <span style={{ color: 'red' }}> *</span></label>
+        <br />
+        <input
+          className='date'
+          type="date"
+          name="dateSeen"
+          value={formData.dateSeen || ''}
+          onChange={handleChange}
+        />
+      </div>
+      <br />
     </div>
   );
 }

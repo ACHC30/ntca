@@ -1,0 +1,33 @@
+.ProblemsPage {
+    text-align: center;
+}
+
+.ProblemsPage h2 {
+    color: #333333;
+    font-family: "Lato", Helvetica;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 24px;
+    text-align: center;
+}
+
+.ProblemsPage label {
+    color: #4c4c4c;
+    font-family: "Lato", Helvetica;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 20px;
+}
+
+.ProblemsPage .checkboxesFrames {
+    width: 393px; /* Adjust this width as needed */
+    max-width: 85%;
+    text-align: left;
+    margin: 0 auto;
+}
+
+.ProblemsPage .checkboxes {
+    padding: 10px;
+}

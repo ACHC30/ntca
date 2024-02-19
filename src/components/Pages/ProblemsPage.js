@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../css/ProblemsPage.css'
 
 function ProblemsPage({ problems, formData, setFormData }) {
   const handleChangeProblems = (e) => {
@@ -15,22 +16,25 @@ function ProblemsPage({ problems, formData, setFormData }) {
     }
   };
   return (
-    <div>
+    <div className='ProblemsPage'>
       <h2>Problems Present</h2>
-      {problems.map((problem, index) => (
-        <div key={index}>
-          <input
-            key={index}
-            type="checkbox"
-            name="problems"
-            value={problem}
-            checked={formData.problems && formData.problems.includes(problem)}
-            onChange={handleChangeProblems}
-          />
-          <label>{problem}</label>
-          <br />
-        </div>
-      ))}
+      <div className='checkboxesFrames'>
+        {problems.map((problem, index) => (
+          <div className='checkboxes' key={index}>
+            <input
+              key={index}
+              type="checkbox"
+              name="problems"
+              value={problem}
+              checked={formData.problems && formData.problems.includes(problem)}
+              onChange={handleChangeProblems}
+            />
+            <label>{problem}</label>
+            <br />
+          </div>
+        ))}
+      </div>
+      <br />
     </div>
   );
 }
