@@ -23,7 +23,6 @@ function PersonInfoPage({ formData, setFormData, reportersRole }) {
         [name]: value,
       }));
     }
-    
   };
   const handleChangePhoneNum = (value, name) => {
     if (name === 'phone') {
@@ -57,7 +56,7 @@ function PersonInfoPage({ formData, setFormData, reportersRole }) {
           name="email"
           value={formData.email || ''}
           onChange={handleChange}
-          placeholder="Email*"
+          placeholder="Email *"
         />
       <br />
       <div className='phonenum'>

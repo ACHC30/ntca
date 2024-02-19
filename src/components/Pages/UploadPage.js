@@ -1,6 +1,7 @@
 import React from 'react';
+import '../../css/UploadPage.css'
 
-function UploadPage({ imageKey,setFormData, setImages, selectedFiles }) {
+function UploadPage({ imageKey,setFormData, setImages, selectedFilesImage, selectedFilesVideo }) {
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -9,7 +10,7 @@ function UploadPage({ imageKey,setFormData, setImages, selectedFiles }) {
         reader.onerror = (error) => reject(error);
     });
   };
-  const handleChangeUpload = async (e) => {
+  const handleChangeUploadImage = async (e) => {
     const {name, type, files} = e.target;
     if (type === 'file') {
       //save file name in JSON file
@@ -30,32 +31,49 @@ function UploadPage({ imageKey,setFormData, setImages, selectedFiles }) {
       localStorage.setItem(imageKey, JSON.stringify(images64));
     }
   };
+  const handleChangeUploadVideo = async (e) => {
+    const {name, type, files} = e.target;
+    return
+  };
   return (
-    <div>
+    <div className='UploadPage'>
       <h2>Upload Pictures</h2>
-      <br />
-      <label>Selected Files</label>
+      <div className='uploadFrames'>
+        <label>Upload photos showing the problem <span style={{ color: 'red' }}> *</span></label>
+        <br/>
+        <label htmlFor="file-upload" className="custom-upload-button">Click to choose photos to upload</label>
+        <input
+          id='file-upload'
+          className='upload'
+          type="file"
+          accept="image/*"
+          name="image"
+          onChange={handleChangeUploadImage}
+          multiple
+        />
+        <br/>
+        {selectedFilesImage && selectedFilesImage.map((file, index) => (<label key={index}>{file}</label>))}
+        {!selectedFilesImage && <label>None Selected</label>}
+      </div>
       <br/>
-      {selectedFiles && selectedFiles.map((file, index) => (<p key={index}>{file}</p>))}
-      {!selectedFiles && <p>None Selected</p>}
-      <br/>
-      <input
-        type="file"
-        accept="image/*"
-        name="image"
-        onChange={handleChangeUpload}
-        multiple
-      />
+      <div className='uploadFrames'>
+        <label>Upload videos showing the problem</label>
+        <label htmlFor="file-upload" className="custom-upload-button">Click to choose videos to upload</label>
+        <br />
+        <input
+          id='file-upload'
+          className='upload'
+          type="file"
+          accept="video/*"
+          name="video"
+          onChange={handleChangeUploadVideo}
+          multiple
+        />
+        <br/>
+        {selectedFilesVideo && selectedFilesVideo.map((file, index) => (<label key={index}>{file}</label>))}
+        {!selectedFilesVideo && <label>None Selected</label>}
+        </div>
       <br />
-      {/* <label>Upload Video</label>
-      <br />
-      <input
-        type="file"
-        accept="video/*"
-        name="video"
-        onChange={handleChangeUpload}
-        multiple
-      /> */}
     </div>
   );
 }

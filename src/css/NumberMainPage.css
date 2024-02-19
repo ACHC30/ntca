@@ -24,7 +24,7 @@
 .NumberMainPage .inputFrames,
 .NumberMainPage .dateFrame {
     width: 393px; /* Adjust this width as needed */
-    max-width: 90%;
+    max-width: 80%;
     margin-bottom: 20px;
 }
 
@@ -50,7 +50,7 @@
 }
 
 .NumberMainPage .date{
-    width: 100%;
+    width: 98%;
     height: 36px;
     background-color: transparent;
     border: 1px solid;

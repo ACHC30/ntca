@@ -4,10 +4,23 @@ import '../../css/NumberMainPage.css'
 function NumberMainPage({ formData, setFormData }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
+    if(name !== "dateSeen"){
+      if (!/\d/.test(value)){
+        e.preventDefault();
+      }
+      else{
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value,
+        }));
+      }
+    }
+    else{
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    }
   };
 
   return (
