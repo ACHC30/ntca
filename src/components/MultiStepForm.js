@@ -16,7 +16,6 @@ import '../css/MultiStepForm.css'
 //cache keys
 const FORM_STORAGE_KEY = 'multiStepForm';
 const IMAGE_STORAGE_KEY = 'fileListImage';
-const VIDEO_STORAGE_KEY = 'fileListVideo';
 
 function MultiStepForm() {
   //Lists
@@ -74,11 +73,6 @@ function MultiStepForm() {
     if (retrievedImageList) {
       const deserializedImageList = JSON.parse(retrievedImageList);
       setImages(deserializedImageList);
-    }
-    const retrievedVideoList = localStorage.getItem(VIDEO_STORAGE_KEY);
-    if (retrievedVideoList) {
-      const deserializedVideoList = JSON.parse(retrievedVideoList);
-      setVideos(deserializedVideoList);
     }
     // Fetch IP address when component mounts
     fetch("https://api.ipify.org?format=json")
@@ -152,7 +146,6 @@ function MultiStepForm() {
     // Clear form data from cache
     localStorage.removeItem(FORM_STORAGE_KEY);
     localStorage.removeItem(IMAGE_STORAGE_KEY);
-    localStorage.removeItem(VIDEO_STORAGE_KEY);
     // Clear & Reset the form data after submission
     setStep(1);
     setAddress("");
@@ -251,7 +244,6 @@ function MultiStepForm() {
         return(
           <UploadPage
             imageKey={IMAGE_STORAGE_KEY}
-            videoKey={VIDEO_STORAGE_KEY}
             setFormData={setFormData}
             setImages={setImages}
             setVideos={setVideos}
