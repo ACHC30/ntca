@@ -16,6 +16,7 @@ import '../css/MultiStepForm.css'
 //cache keys
 const FORM_STORAGE_KEY = 'multiStepForm';
 const IMAGE_STORAGE_KEY = 'fileListImage';
+const VIDEO_STORAGE_KEY = 'fileListVideo';
 
 function MultiStepForm() {
   //Lists
@@ -49,6 +50,7 @@ function MultiStepForm() {
   //useStates
   const [address, setAddress] = useState("");
   const [images, setImages] = useState({});
+  const [videos, setVideos] = useState({});
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
@@ -67,11 +69,16 @@ function MultiStepForm() {
   }, [formData]);
 
   useEffect(() => {
-    // Retrieve the File List
-    const retrievedFileList = localStorage.getItem(IMAGE_STORAGE_KEY);
-    if (retrievedFileList) {
-      const deserializedFileList = JSON.parse(retrievedFileList);
-      setImages(deserializedFileList);
+    // Retrieve the Files List
+    const retrievedImageList = localStorage.getItem(IMAGE_STORAGE_KEY);
+    if (retrievedImageList) {
+      const deserializedImageList = JSON.parse(retrievedImageList);
+      setImages(deserializedImageList);
+    }
+    const retrievedVideoList = localStorage.getItem(VIDEO_STORAGE_KEY);
+    if (retrievedVideoList) {
+      const deserializedVideoList = JSON.parse(retrievedVideoList);
+      setVideos(deserializedVideoList);
     }
     // Fetch IP address when component mounts
     fetch("https://api.ipify.org?format=json")
@@ -136,7 +143,7 @@ function MultiStepForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // check for image upload
-    if(!formData.image || formData.image.length < 1){
+    if(!formData.images || formData.images.length < 1){
       alert('Upload At Least One Photo');
       return;
     }
@@ -145,10 +152,12 @@ function MultiStepForm() {
     // Clear form data from cache
     localStorage.removeItem(FORM_STORAGE_KEY);
     localStorage.removeItem(IMAGE_STORAGE_KEY);
+    localStorage.removeItem(VIDEO_STORAGE_KEY);
     // Clear & Reset the form data after submission
     setStep(1);
     setAddress("");
     setImages({});
+    setVideos({});
     setFormData(() => {
       const parsedFormData = {};
       // Ensure 'Other' is always checked first
@@ -167,15 +176,30 @@ function MultiStepForm() {
     // Combine formData and Images into a single object
     const requestData = {
       formData: formData,
-      base64Images: images
+      base64Images: images,
+      base64Videos: videos
     };
 
     // console.log(formData);
     alert('Please wait email is being sent...');
 
-    await axios.post(azureFunctionEndpoint, requestData)
-      .then(() => alert('Email sent'))
-      .catch((error) => console.error(error));
+   // Make a POST request to the Azure Function endpoint
+   await axios.post(azureFunctionEndpoint, requestData)
+   .then((response) => {
+       // Check if the response status is successful (status code 200)
+       if (response.status === 200) {
+           // Show success message when email is sent successfully
+           alert('Email sent');
+       } else {
+           // Show an error message if there is a problem with the response
+           alert('Error sending email. Please try again later.');
+       }
+   })
+   .catch((error) => {
+       // Show an error message if there is an error during the request
+       console.error('Error sending email:', error);
+       alert('Error sending email. Please try again later.');
+   });
   };
   const renderForm = () => {
     switch (step) {
@@ -227,9 +251,12 @@ function MultiStepForm() {
         return(
           <UploadPage
             imageKey={IMAGE_STORAGE_KEY}
+            videoKey={VIDEO_STORAGE_KEY}
             setFormData={setFormData}
             setImages={setImages}
-            selectedFilesImage={formData.image}
+            setVideos={setVideos}
+            selectedFilesImage={formData.images}
+            selectedFilesVideo={formData.videos}
           />
         );
       default:
