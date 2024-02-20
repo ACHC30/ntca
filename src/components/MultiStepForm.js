@@ -229,7 +229,7 @@ function MultiStepForm() {
             imageKey={IMAGE_STORAGE_KEY}
             setFormData={setFormData}
             setImages={setImages}
-            selectedFiles={formData.image}
+            selectedFilesImage={formData.image}
           />
         );
       default:

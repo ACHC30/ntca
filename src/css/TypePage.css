@@ -24,7 +24,7 @@
 .TypePage .inputFrames,
 .TypePage .selectFrame {
     width: 393px; /* Adjust this width as needed */
-    max-width: 80%;
+    max-width: 95%;
     margin-bottom: 20px;
 }
 
