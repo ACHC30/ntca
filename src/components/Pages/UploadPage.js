@@ -2,7 +2,7 @@ import React from 'react';
 import '../../css/UploadPage.css'
 
 function UploadPage({ imageKey, videoKey,  setFormData, setImages, setVideos, selectedFilesImage, selectedFilesVideo }) {
-  const MAX_LOCAL_STORAGE_SIZE_MB = 10; // Maximum allowed size of local storage in megabytes
+  const MAX_LOCAL_STORAGE_SIZE_MB = 5; // Maximum allowed size of local storage in megabytes
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -74,9 +74,9 @@ function UploadPage({ imageKey, videoKey,  setFormData, setImages, setVideos, se
       <div className='uploadFrames'>
         <label>Upload photos showing the problem <span style={{ color: 'red' }}> *</span></label>
         <br/>
-        <label htmlFor="file-upload" className="custom-upload-button">Click to choose photos to upload</label>
+        <label htmlFor="images-upload" className="custom-upload-button">Click to choose photos to upload</label>
         <input
-          id='file-upload'
+          id='images-upload'
           className='upload'
           type="file"
           accept="image/*"
@@ -91,16 +91,15 @@ function UploadPage({ imageKey, videoKey,  setFormData, setImages, setVideos, se
       <br/>
       <div className='uploadFrames'>
         <label>Upload videos showing the problem</label>
-        <label htmlFor="file-upload" className="custom-upload-button">Click to choose videos to upload</label>
+        <label htmlFor="videos-upload" className="custom-upload-button">Click to choose videos to upload</label>
         <br />
         <input
-          id='file-upload'
+          id='videos-upload'
           className='upload'
           type="file"
           accept="video/*"
           name="videos"
           onChange={handleChangeUploadVideo}
-          capture="environment"
           multiple
         />
         <br/>
