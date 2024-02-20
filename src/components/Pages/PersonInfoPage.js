@@ -72,10 +72,11 @@ function PersonInfoPage({ formData, setFormData, reportersRole }) {
         />
       </div>
       <br />
-      <div className='dropdown'>
+      <div className='selectFrame'>
         <label>Reporter's Role:</label>
         <br />
         <select
+          className='select'
           name="reportersRole"
           value={formData.reportersRole || ''}
           onChange={handleChange}
