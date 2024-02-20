@@ -51,6 +51,13 @@
     outline: none; /* Removes the default blue outline when focused */
 }
 
+.PhoneInputInput {
+    width: 400px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
 .PersonInfoPage .selectFrame {
     width: 393px;
     text-align: left;
@@ -64,11 +71,5 @@
     border: 1px solid;
     border-color: #1d7cbc;
     border-radius: 6px;
-}
-
-.PhoneInputInput {
-    width: 400px;
-    background-color: transparent;
-    border: none;
-    outline: none;
+    opacity: 0.5;
 }
