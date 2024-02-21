@@ -51,6 +51,9 @@ jobs:
         with:
           name: node-app
           
+      - name: Debug Environment Variable
+        run: echo $REACT_APP_GOOGLE_MAPS_API_KEY
+          
       - name: Set up environment variables
         run: echo "REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}" >> $GITHUB_ENV
 
