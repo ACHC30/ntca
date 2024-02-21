@@ -47,6 +47,7 @@ function MultiStepForm() {
     "Other",
   ];
   //useStates
+  const [apiKey, setApiKey] = useState('');
   const [address, setAddress] = useState("");
   const [images, setImages] = useState({});
   const [videos, setVideos] = useState({});
@@ -62,32 +63,6 @@ function MultiStepForm() {
     }
     return parsedFormData;
   });
-  //useEffects
-  useEffect(() => {
-    localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
-  }, [formData]);
-
-  useEffect(() => {
-    // Retrieve the Files List
-    const retrievedImageList = localStorage.getItem(IMAGE_STORAGE_KEY);
-    if (retrievedImageList) {
-      const deserializedImageList = JSON.parse(retrievedImageList);
-      setImages(deserializedImageList);
-    }
-    // Fetch IP address when component mounts
-    fetch("https://api.ipify.org?format=json")
-      .then(response => response.json())
-      .then(data => {
-        const ipAddress = data.ip;
-        setFormData(prevFormData => ({
-          ...prevFormData,
-          ipAddress: ipAddress
-        }));
-      })
-      .catch(error => {
-        console.error("Error fetching IP address:", error);
-      });
-  }, []);
   //Functions
   const nextStep = () => {
     // Perform validation before proceeding to the next step
@@ -194,6 +169,44 @@ function MultiStepForm() {
        alert('Error sending email. Please try again later.');
    });
   };
+  const fetchGoogleMapsApiKey = async () => {
+    try {
+      const response = await axios.get('https://ntca-aibrisbane.azurewebsites.net/api/HttpTrigger2?code=LXZML1quwbUpZXSqr3eVDYM7NsJNSlt-VWvaHpJKRkC7AzFuFPETkg==');
+      const apiKey = response.data.googleMapsAPIKey;
+      // Set Google Maps API Key
+      setApiKey(apiKey)
+    } catch (error) {
+      console.error('Error fetching Google Maps API Key:', error);
+    }
+  };
+  //useEffects
+  useEffect(() => {
+    localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
+  }, [formData]);
+  useEffect(() => {
+    
+    // Fetch Google Maps API Key from your Azure Function endpoint (needs to be here or it will be done twice!!!!)
+    fetchGoogleMapsApiKey();
+    // Retrieve the Files List
+    const retrievedImageList = localStorage.getItem(IMAGE_STORAGE_KEY);
+    if (retrievedImageList) {
+      const deserializedImageList = JSON.parse(retrievedImageList);
+      setImages(deserializedImageList);
+    }
+    // Fetch IP address when component mounts
+    fetch("https://api.ipify.org?format=json")
+      .then(response => response.json())
+      .then(data => {
+        const ipAddress = data.ip;
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          ipAddress: ipAddress
+        }));
+      })
+      .catch(error => {
+        console.error("Error fetching IP address:", error);
+      });
+  }, []);
   const renderForm = () => {
     switch (step) {
       case 1:
@@ -215,6 +228,7 @@ function MultiStepForm() {
             setFormData={setFormData}
             address={address}
             setAddress={setAddress}
+            apiKey={apiKey}
           />
         );
       case 4:

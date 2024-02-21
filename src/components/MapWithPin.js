@@ -1,15 +1,13 @@
 import { React, useState, useEffect } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
-const MapWithPin = ({address, setAddress}) => {
-  console.log(process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
+const MapWithPin = ({address, setAddress, apiKey}) => {
+  const [position, setPosition] = useState({ lat: 51.505, lng: -0.09 });
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY // Replace with your API key
+    googleMapsApiKey: apiKey
   });
 
-  const [position, setPosition] = useState({ lat: 51.505, lng: -0.09 });
-  
   useEffect(() => {
     // Fetch user's current position using Geolocation API
     if (address) {
