@@ -33,7 +33,7 @@ function TypePage({ formData, setFormData, cattleTypesAges }) {
       <div className='inputFrames'>
         <label>Other Comments</label>
         <br />
-        <input
+        <textarea
           className='input'
           type="text"
           name="comment"
