@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
   AZURE_WEBAPP_NAME: NTCA-AIDatapros   # set this to your application's name
