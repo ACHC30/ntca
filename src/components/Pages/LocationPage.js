@@ -1,9 +1,10 @@
 import React from 'react';
-import MapWithPin from '../MapWithPin'; // Assuming MapWithPin is a component in your project
+import MapWithPin from '../MapWithPin';
 import '../../css/LocationPage.css'
 
-function LocationPage({ formData, setFormData, address, setAddress}) {
-    const handleChange = (e) => {
+function LocationPage({ formData, setFormData, address, setAddress, apiKey}) {
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -48,7 +49,7 @@ function LocationPage({ formData, setFormData, address, setAddress}) {
       <br />
       <div className='mapsFrame'>
         <label>Location Cattle found: <span style={{ color: 'red' }}> *</span> </label>
-        <MapWithPin address={address} setAddress={handleAddressChange} />
+        <MapWithPin address={address} setAddress={handleAddressChange} apiKey={apiKey} />
         <br />
         <input
           className='input'
@@ -57,6 +58,7 @@ function LocationPage({ formData, setFormData, address, setAddress}) {
           value={formData.location || ''}
           onChange={handleChange}
           placeholder="Address"
+          readOnly
         />
       </div>
       <br />
