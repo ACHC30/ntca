@@ -57,7 +57,6 @@ function LocationPage({ formData, setFormData, address, setAddress}) {
           value={formData.location || ''}
           onChange={handleChange}
           placeholder="Address"
-          readOnly
         />
       </div>
       <br />
