@@ -52,7 +52,7 @@ jobs:
           name: node-app
           
       - name: Set up environment variables
-        run: echo "GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}" >> $GITHUB_ENV
+        run: echo "REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}" >> $GITHUB_ENV
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
