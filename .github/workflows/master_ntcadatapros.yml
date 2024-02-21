@@ -59,4 +59,5 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BB21C05B83E84C9C939932C9BC58DF92 }}
           package: release.zip
-          api-key: ${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
+        env: 
+          REACT_APP_GOOGLE_MAPS_API_KEY : ${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
