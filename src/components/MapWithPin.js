@@ -2,7 +2,7 @@ import { React, useState, useEffect } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
 const MapWithPin = ({address, setAddress}) => {
-  const googleMapsApiKey = process.env.CI ? process.env.MAPS_API_SECRET : process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+  const googleMapsApiKey = process.env.CI ? process.env.GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
