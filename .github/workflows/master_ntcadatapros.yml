@@ -44,6 +44,8 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    env:
+      MAPS_API_SECRET: ${{ secrets.GOOGLE_MAPS_API_KEY }}
 
     steps:
       - name: Download artifact from build job
