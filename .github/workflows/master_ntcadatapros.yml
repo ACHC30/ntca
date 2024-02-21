@@ -58,4 +58,4 @@ jobs:
           app-name: 'ntcadatapros'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BB21C05B83E84C9C939932C9BC58DF92 }}
-          package: .
+          package: release.zip
