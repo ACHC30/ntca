@@ -51,8 +51,11 @@ jobs:
         with:
           name: node-app
           
-      - name: Debug Environment Variable
-        run: echo ${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
+      - name: Print API key
+        run: | 
+          echo "API Key: $REACT_APP_GOOGLE_MAPS_API_KEY"
+        env:
+          REACT_APP_GOOGLE_MAPS_API_KEY: ${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
