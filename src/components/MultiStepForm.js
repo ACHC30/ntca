@@ -8,6 +8,7 @@ import ProblemsPage from './Pages/ProblemsPage';
 import NumberMainPage from './Pages/NumberMainPage';
 import TypePage from './Pages/TypePage';
 import UploadPage from './Pages/UploadPage';
+import LoadingPage from './LoadingPage';
 //Logos and images
 import logo from '../images/NTCA_Logo.png';
 //CSS
@@ -122,7 +123,6 @@ function MultiStepForm() {
     localStorage.removeItem(FORM_STORAGE_KEY);
     localStorage.removeItem(IMAGE_STORAGE_KEY);
     // Clear & Reset the form data after submission
-    setStep(1);
     setAddress("");
     setImages({});
     setVideos({});
@@ -136,27 +136,27 @@ function MultiStepForm() {
       }
       return parsedFormData;
     });
+
     return
   };
   const sendEmail = async () => {
+    // Show loading page 
+    setStep((prevStep) => prevStep + 1);
+    // Begin Sending Email
     const azureFunctionEndpoint = 'https://ntca-aibrisbane.azurewebsites.net/api/HttpTrigger1?code=shGA9qTFkEQcPCRnRx4IZUTLpsL_Q3IYk330GAeDVZ2GAzFuJmJTnQ==';
-
     // Combine formData and Images into a single object
     const requestData = {
       formData: formData,
       base64Images: images,
       base64Videos: videos
     };
-
-    // console.log(formData);
-    alert('Please wait email is being sent...');
-
    // Make a POST request to the Azure Function endpoint
    await axios.post(azureFunctionEndpoint, requestData)
    .then((response) => {
        // Check if the response status is successful (status code 200)
        if (response.status === 200) {
            // Show success message when email is sent successfully
+           setStep(1);
            alert('Email sent');
        } else {
            // Show an error message if there is a problem with the response
@@ -265,6 +265,10 @@ function MultiStepForm() {
             selectedFilesVideo={formData.videos}
           />
         );
+      case 8:
+        return(
+          <LoadingPage type={'spin'} color={'black'} />
+        );
       default:
         return null;
     }
@@ -272,7 +276,7 @@ function MultiStepForm() {
   return (
     <div className='MultiStepForm'>
       <form onSubmit={handleSubmit}>
-        {step > 1 && (
+        {step > 1 && step !== 8 && (
           <div className='MultiStepForm-backFrame'>
             <button className='MultiStepForm-back' type="button" onClick={prevStep}>
               &lt; Back
