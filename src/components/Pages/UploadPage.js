@@ -66,7 +66,7 @@ function UploadPage({ imageKey, setFormData, setImages, setVideos, selectedFiles
           multiple
         />
         <br/>
-        {selectedFilesImage && selectedFilesImage.map((file, index) => (<label key={index}>{file}</label>))}
+        {selectedFilesImage && selectedFilesImage.map((file, index) => (<div><label key={index}>{file}</label><br /></div>))}
         {!selectedFilesImage && <label>None Selected</label>}
       </div>
       <br/>

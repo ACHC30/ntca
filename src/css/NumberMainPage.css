@@ -34,13 +34,18 @@
 }
 
 .NumberMainPage .input{
-    width: 98.5%;
+    width: 97%;
     height: 40px;
     background-color: transparent;
     border: 1px solid;
     border-color: #1d7cbc;
     border-radius: 6px;
     outline: none; /* Removes the default blue outline when focused */
+}
+
+.NumberMainPage .input::-webkit-inner-spin-button,
+.NumberMainPage .input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
 }
 
 .NumberMainPage .dateFrame{
@@ -57,4 +62,3 @@
     border-color: #1d7cbc;
     border-radius: 6px;
 }
-

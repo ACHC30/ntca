@@ -4,23 +4,10 @@ import '../../css/NumberMainPage.css'
 function NumberMainPage({ formData, setFormData }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if(name !== "dateSeen"){
-      if (!/\d/.test(value)){
-        e.preventDefault();
-      }
-      else{
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          [name]: value,
-        }));
-      }
-    }
-    else{
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: value,
-      }));
-    }
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
   return (
@@ -31,11 +18,10 @@ function NumberMainPage({ formData, setFormData }) {
         <br />
         <input
           className='input'
-          type="text"
+          type="number"
           name="affected"
           value={formData.affected || ''}
           onChange={handleChange}
-          placeholder="1-2-3"
         />
       </div>
       <br />
@@ -44,11 +30,10 @@ function NumberMainPage({ formData, setFormData }) {
         <br />
         <input
           className='input'
-          type="text"
+          type="number"
           name="dead"
           value={formData.dead || ''}
           onChange={handleChange}
-          placeholder="1-2-3"
         />
       </div>
       <br />
@@ -57,11 +42,10 @@ function NumberMainPage({ formData, setFormData }) {
         <br />
         <input
           className='input'
-          type="text"
+          type="number"
           name="risk"
           value={formData.risk || ''}
           onChange={handleChange}
-          placeholder="1-2-3"
         />
       </div>
       <br />
