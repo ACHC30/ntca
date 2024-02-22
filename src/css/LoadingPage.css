@@ -1,0 +1,33 @@
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.LoadingPage {
+    margin: 5%;
+    display: flex; /* Add this line */
+    flex-direction: column; /* Add this line */
+    align-items: center; /* Add this line */
+}
+
+.LoadingPage .spinner {
+    height: 200px;
+    width: 200px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #333333;
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
+}
+
+.LoadingPage h1{
+    color: #333333;
+    font-family: "Lato";
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: normal;
+}
