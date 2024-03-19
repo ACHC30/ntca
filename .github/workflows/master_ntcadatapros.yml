@@ -55,7 +55,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'ntcadatapros'
+          app-name: 'web-dev-ntca'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BB21C05B83E84C9C939932C9BC58DF92 }}
           package: release.zip
