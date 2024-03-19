@@ -1,7 +1,7 @@
 # Pre Requisite
 1. npm
 2. npx
-3. Google maps javascript API key (geocode)
+3. Google maps javascript API key
 4. azure web app 
 5. azure function app
 6. sengrid API
