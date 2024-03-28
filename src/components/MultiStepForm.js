@@ -57,11 +57,11 @@ function MultiStepForm() {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
     // Ensure 'Other' is always checked first
-    if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
+   /* if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
       parsedFormData.problems.push('Other');
     } else if (!parsedFormData.problems) {
       parsedFormData.problems = ['Other'];
-    }
+    }*/
     return parsedFormData;
   });
   //Functions
