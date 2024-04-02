@@ -128,13 +128,13 @@ function MultiStepForm() {
     setVideos({});
     setFormData(() => {
       const parsedFormData = {};
-      // Ensure 'Other' is always checked first
-      if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
-        parsedFormData.problems.push('Other');
-      } else if (!parsedFormData.problems) {
-        parsedFormData.problems = ['Other'];
-      }
-      return parsedFormData;
+      // // Ensure 'Other' is always checked first
+      // if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
+      //   parsedFormData.problems.push('Other');
+      // } else if (!parsedFormData.problems) {
+      //   parsedFormData.problems = ['Other'];
+      // }
+      // return parsedFormData;
     });
 
     return
