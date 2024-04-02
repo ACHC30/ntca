@@ -134,7 +134,7 @@ function MultiStepForm() {
       // } else if (!parsedFormData.problems) {
       //   parsedFormData.problems = ['Other'];
       // }
-      // return parsedFormData;
+      return parsedFormData;
     });
 
     return
