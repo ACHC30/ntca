@@ -56,12 +56,24 @@ function MultiStepForm() {
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-    // Ensure 'Other' is always checked first
-   /* if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
-      parsedFormData.problems.push('Other');
-    } else if (!parsedFormData.problems) {
-      parsedFormData.problems = ['Other'];
-    }*/
+    // Create default format
+    parsedFormData.entryID = '';
+    parsedFormData.name = '';
+    parsedFormData.email = '';
+    parsedFormData.phone = '';
+    parsedFormData.reportersRole = '';
+    parsedFormData.property = '';
+    parsedFormData.pic = '';
+    parsedFormData.location = '';
+    parsedFormData.problems = [];
+    parsedFormData.affected = '';
+    parsedFormData.dead = '';
+    parsedFormData.risk = '';
+    parsedFormData.dateSeen = '';
+    parsedFormData.cattleAffected = '';
+    parsedFormData.comment = '';
+    parsedFormData.images = [];
+    parsedFormData.videos = [];
     return parsedFormData;
   });
   //Functions
@@ -128,12 +140,24 @@ function MultiStepForm() {
     setVideos({});
     setFormData(() => {
       const parsedFormData = {};
-      // // Ensure 'Other' is always checked first
-      // if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
-      //   parsedFormData.problems.push('Other');
-      // } else if (!parsedFormData.problems) {
-      //   parsedFormData.problems = ['Other'];
-      // }
+      // Create default format
+      parsedFormData.entryID = '';
+      parsedFormData.name = '';
+      parsedFormData.email = '';
+      parsedFormData.phone = '';
+      parsedFormData.reportersRole = '';
+      parsedFormData.property = '';
+      parsedFormData.pic = '';
+      parsedFormData.location = '';
+      parsedFormData.problems = [];
+      parsedFormData.affected = '';
+      parsedFormData.dead = '';
+      parsedFormData.risk = '';
+      parsedFormData.dateSeen = '';
+      parsedFormData.cattleAffected = '';
+      parsedFormData.comment = '';
+      parsedFormData.images = [];
+      parsedFormData.videos = [];
       return parsedFormData;
     });
 
