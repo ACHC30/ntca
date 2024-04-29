@@ -56,12 +56,24 @@ function MultiStepForm() {
   const [formData, setFormData] = useState(() => {
     const storedFormData = localStorage.getItem(FORM_STORAGE_KEY);
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-    // Ensure 'Other' is always checked first
-    if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
-      parsedFormData.problems.push('Other');
-    } else if (!parsedFormData.problems) {
-      parsedFormData.problems = ['Other'];
-    }
+    // Create default format
+    parsedFormData.entryID = '';
+    parsedFormData.name = '';
+    parsedFormData.email = '';
+    parsedFormData.phone = '';
+    parsedFormData.reportersRole = '';
+    parsedFormData.property = '';
+    parsedFormData.pic = '';
+    parsedFormData.location = '';
+    parsedFormData.problems = [];
+    parsedFormData.affected = '';
+    parsedFormData.dead = '';
+    parsedFormData.risk = '';
+    parsedFormData.dateSeen = '';
+    parsedFormData.cattleAffected = '';
+    parsedFormData.comment = '';
+    parsedFormData.images = [];
+    parsedFormData.videos = [];
     return parsedFormData;
   });
   //Functions
@@ -128,12 +140,24 @@ function MultiStepForm() {
     setVideos({});
     setFormData(() => {
       const parsedFormData = {};
-      // Ensure 'Other' is always checked first
-      if (parsedFormData.problems && !parsedFormData.problems.includes('Other')) {
-        parsedFormData.problems.push('Other');
-      } else if (!parsedFormData.problems) {
-        parsedFormData.problems = ['Other'];
-      }
+      // Create default format
+      parsedFormData.entryID = '';
+      parsedFormData.name = '';
+      parsedFormData.email = '';
+      parsedFormData.phone = '';
+      parsedFormData.reportersRole = '';
+      parsedFormData.property = '';
+      parsedFormData.pic = '';
+      parsedFormData.location = '';
+      parsedFormData.problems = [];
+      parsedFormData.affected = '';
+      parsedFormData.dead = '';
+      parsedFormData.risk = '';
+      parsedFormData.dateSeen = '';
+      parsedFormData.cattleAffected = '';
+      parsedFormData.comment = '';
+      parsedFormData.images = [];
+      parsedFormData.videos = [];
       return parsedFormData;
     });
 
@@ -143,7 +167,7 @@ function MultiStepForm() {
     // Show loading page 
     setStep((prevStep) => prevStep + 1);
     // Begin Sending Email
-    const azureFunctionEndpoint = 'https://ntca-aibrisbane.azurewebsites.net/api/HttpTrigger1?code=shGA9qTFkEQcPCRnRx4IZUTLpsL_Q3IYk330GAeDVZ2GAzFuJmJTnQ==';
+    const azureFunctionEndpoint = 'https://func-dev-ntca-001.azurewebsites.net/api/HttpTrigger-dev-uploading-ntca-001?code=3HNcsp2QRF5Uzq2PuOlfLI5G6bXH0IM2ZYYyrwSKTvXpAzFuPPTPyw==';
     // Combine formData and Images into a single object
     const requestData = {
       formData: formData,
@@ -171,7 +195,7 @@ function MultiStepForm() {
   };
   const fetchGoogleMapsApiKey = async () => {
     try {
-      const response = await axios.get('https://ntca-aibrisbane.azurewebsites.net/api/HttpTrigger2?code=LXZML1quwbUpZXSqr3eVDYM7NsJNSlt-VWvaHpJKRkC7AzFuFPETkg==');
+      const response = await axios.get('https://func-dev-ntca-001.azurewebsites.net/api/HttpTrigger-dev-GoogleAPI-ntca-001?code=IFE6dmJnHPZ9qvl0P85rrsPxKehMrvaxxA7ZzbzK1CnpAzFuj2q14g==');
       const apiKey = response.data.googleMapsAPIKey;
       // Set Google Maps API Key
       setApiKey(apiKey)
@@ -184,7 +208,6 @@ function MultiStepForm() {
     localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
   }, [formData]);
   useEffect(() => {
-    
     // Fetch Google Maps API Key from your Azure Function endpoint (needs to be here or it will be done twice!!!!)
     fetchGoogleMapsApiKey();
     // Retrieve the Files List

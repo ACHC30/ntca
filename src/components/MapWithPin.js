@@ -38,6 +38,7 @@ const MapWithPin = ({address, setAddress, apiKey}) => {
     }
   }, [address]);
 
+  //Handle dragged marker
   const handleMarkerDrag = (event) => {
     setPosition({
       lat: event.latLng.lat(),
@@ -49,6 +50,7 @@ const MapWithPin = ({address, setAddress, apiKey}) => {
     })
   };
 
+  //Get address by location
   const findAddress = (event) => {
     const geocoder = new window.google.maps.Geocoder();
     const latlng = { lat: event.lat, lng: event.lng };
