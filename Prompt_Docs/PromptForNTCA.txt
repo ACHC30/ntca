@@ -20,13 +20,15 @@ Here's a breakdown of what you need to do:
  
 4. **Result Compilation:**
    - Organise the results and recommendations into a structured JSON format:
-     ```json
+   - The json result only return category which has counted number greater than 0
      {
        "table": [
-         {"Category": "", "Result": "", "Score": X, ...}
+         {"Category #": "",
+         "Result": "",
+         "Score": X,
+          "Count": # ...}
        ],
      }
-     ```
 
 CSV File Example
     PhotoName, Category,Count,Score
