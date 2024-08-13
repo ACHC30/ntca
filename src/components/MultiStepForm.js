@@ -166,8 +166,9 @@ function MultiStepForm() {
   const sendEmail = async () => {
     // Show loading page 
     setStep((prevStep) => prevStep + 1);
-    // Begin Sending Email
-    const azureFunctionEndpoint = 'https://func-dev-ntca-001.azurewebsites.net/api/HttpTrigger-dev-uploading-ntca-001?code=3HNcsp2QRF5Uzq2PuOlfLI5G6bXH0IM2ZYYyrwSKTvXpAzFuPPTPyw==';
+    // Begin Sending
+    // const azureFunctionEndpoint = 'https://func-dev-ntca-001.azurewebsites.net/api/HttpTrigger-dev-uploading-ntca-001?code=3HNcsp2QRF5Uzq2PuOlfLI5G6bXH0IM2ZYYyrwSKTvXpAzFuPPTPyw==';
+    const awsLambdaEndpoint = 'https://vfnt3ktocg.execute-api.ap-southeast-2.amazonaws.com/default/HttpTriggerDevUploadingNtca001';
     // Combine formData and Images into a single object
     const requestData = {
       formData: formData,
@@ -175,13 +176,13 @@ function MultiStepForm() {
       base64Videos: videos
     };
    // Make a POST request to the Azure Function endpoint
-   await axios.post(azureFunctionEndpoint, requestData)
+   await axios.post(awsLambdaEndpoint, requestData)
    .then((response) => {
        // Check if the response status is successful (status code 200)
        if (response.status === 200) {
            // Show success message when email is sent successfully
            setStep(1);
-           alert('Email sent');
+           alert('Data Sent & Uploaded');
        } else {
            // Show an error message if there is a problem with the response
            alert('Error sending email. Please try again later.');
@@ -189,14 +190,14 @@ function MultiStepForm() {
    })
    .catch((error) => {
        // Show an error message if there is an error during the request
-       console.error('Error sending email:', error);
-       alert('Error sending email. Please try again later.');
+       console.error('Error sending Data:', error);
+       alert('Error sending Data. Please try again later.');
    });
   };
   const fetchGoogleMapsApiKey = async () => {
     try {
-      const response = await axios.get('https://func-dev-ntca-001.azurewebsites.net/api/HttpTrigger-dev-GoogleAPI-ntca-001?code=IFE6dmJnHPZ9qvl0P85rrsPxKehMrvaxxA7ZzbzK1CnpAzFuj2q14g==');
-      const apiKey = response.data.googleMapsAPIKey;
+      // const response = await axios.get('https://func-dev-ntca-001.azurewebsites.net/api/HttpTrigger-dev-GoogleAPI-ntca-001?code=IFE6dmJnHPZ9qvl0P85rrsPxKehMrvaxxA7ZzbzK1CnpAzFuj2q14g==');
+      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
       // Set Google Maps API Key
       setApiKey(apiKey)
     } catch (error) {
