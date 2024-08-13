@@ -5,6 +5,7 @@
 4. azure web app 
 5. azure function app
 6. sengrid API
+7. test
 
 # Maps API Key Restrictions
 1. Maps JavaScript API
