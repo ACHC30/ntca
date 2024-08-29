@@ -18,7 +18,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Build the app
-        run: npm run build
+        run: REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }} npm run build
       - name: Generate Deployment Package
         run: zip -r build.zip build/ package.json server.js
       - name: Deploy to EB
